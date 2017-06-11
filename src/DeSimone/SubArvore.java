@@ -4,17 +4,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Stack;
 
-import javax.swing.border.EmptyBorder;
-
 public class SubArvore {
 	private static SubArvore INSTANCIA;
 	private static HashMap<Character, Integer> precedencia = new HashMap<>();
 	public static final String operadoresPermitidos = "()*+.|?";
 	private SubArvore() {
-		this.precedencia.put('*', 1);
-		this.precedencia.put('?', 1);
-		this.precedencia.put('.', 2);
-		this.precedencia.put('|', 3);
+		precedencia.put('*', 1);
+		precedencia.put('?', 1);
+		precedencia.put('.', 2);
+		precedencia.put('|', 3);
 	}
 
 	public static synchronized SubArvore obterInstancia() {
