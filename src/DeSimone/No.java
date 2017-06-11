@@ -3,7 +3,7 @@ package DeSimone;
 public class No {
   private No raiz, esquerda, direita, costura;
   
-  private char nome;
+  private char simbolo;
   
   private int numeroFolha;
   
@@ -19,7 +19,7 @@ public class No {
   }
   
   public No(char nome, No pai){
-	  this.nome = nome;
+	  this.simbolo = nome;
 	  this.raiz = pai;
 	  id = codigo;
 	  codigo++;
@@ -29,7 +29,7 @@ public class No {
 	  this.raiz = pai;
 	  this.esquerda = esquerda;
 	  this.direita = direita;
-	  this.nome = nome;
+	  this.simbolo = nome;
 	  
 	  id = codigo;
 	  codigo++;
@@ -76,12 +76,12 @@ public class No {
 	  this.numeroFolha = numero;
   }
   
-  public char nome(){
-	  return this.nome;
+  public char simbolo(){
+	  return this.simbolo;
   }
   
   public void nome(char nome){
-	  this.nome = nome;
+	  this.simbolo = nome;
   }
   
   public boolean costurado(){
@@ -95,7 +95,7 @@ public class No {
 		  label = "["+this.numeroFolha+"]";
 	  }
 	  else{
-		  label = "["+this.nome+"]";
+		  label = "["+this.simbolo+"]";
 	  }
 	  return label;
   }
@@ -104,7 +104,7 @@ public class No {
   public int hashCode(){
 	  final int primeiro = 31;
 	  int resultado = 1;
-	  resultado = primeiro * resultado + this.nome;
+	  resultado = primeiro * resultado + this.simbolo;
 	  resultado = primeiro * resultado + this.numeroFolha;
 	  resultado = primeiro * resultado + this.id;
 	  return resultado;
@@ -119,7 +119,7 @@ public class No {
 		  return false;
 	  }
 	  No no = (No) objeto;
-	  if (this.nome == no.nome && this.numeroFolha == no.numeroFolha && this.costurado == no.costurado){
+	  if (this.simbolo == no.simbolo && this.numeroFolha == no.numeroFolha && this.costurado == no.costurado){
 		  return true;
 	  }
 	  return false; 

@@ -72,8 +72,8 @@ public class SubArvore {
 	}
   }
 
-  public static boolean operador(char c, boolean withParentheses) {
-    if (!withParentheses){
+  public static boolean operador(char c, boolean comParenteses) {
+    if (!comParenteses){
     	return operadoresPermitidos.substring(2, operadoresPermitidos.length()).indexOf(c) != -1;	
     }
 	return operadoresPermitidos.indexOf(c) != -1;

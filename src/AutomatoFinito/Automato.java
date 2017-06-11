@@ -95,7 +95,7 @@ public class Automato extends Regular {
 		return this.estados.contains(estado);
 	}
 	
-	//TODO: maquiagem - sortStates sortAlphabet
+	//TODO: maquiagem - ordenarEstados ordenarAlfabeto
 	
 	public ArrayList<Character> alfabeto(){
 		return this.alfabeto;
