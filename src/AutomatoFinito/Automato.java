@@ -221,7 +221,7 @@ public class Automato extends Regular {
 		this.estadosFinais = estados;
 	}
 	
-	public void adicionarEstadosFinais(Estado estado){
+	public void adicionarEstadoFinal(Estado estado){
 		if (this.estados.contains(estado) && !this.estadosFinais.contains(estado)){
 			this.estadosFinais.add(estado);
 		}
