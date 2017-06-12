@@ -144,7 +144,7 @@ public class DeSimone {
 				break;
 			}
 		}
-		else{
+		else {
 			switch (no.simbolo()) {
 			case '.':
 				arvoreDeBusca(no.direita(), false, listaNos, listaAtravesados, arvore);

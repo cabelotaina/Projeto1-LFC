@@ -20,7 +20,7 @@ public class ExpressaoRegular extends Regular{
   }
   
   @Override
-  public boolean expressaoRegular(){
+  public boolean ehexpressaoRegular(){
 	  return true;
   }
 

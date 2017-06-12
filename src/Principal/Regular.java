@@ -28,12 +28,15 @@ public class Regular {
 		this.descricao = "//"+incremento;
 	}
   }
-  public boolean automato() {
+  public boolean ehautomato() {
 	  return false;
   }
 
-  public boolean expressaoRegular() {
+  public boolean ehexpressaoRegular() {
 	  return false;
   }
   
+  public boolean ehgramatica(){
+	  return false;
+  }
 }

@@ -248,7 +248,7 @@ public class Automato extends Regular {
 	}
 	
 	@Override
-	public boolean automato(){
+	public boolean ehautomato(){
 		return true;
 	}
 	
