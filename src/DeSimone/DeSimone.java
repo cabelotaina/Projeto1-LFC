@@ -93,8 +93,85 @@ public class DeSimone {
 	}
 
 	private static ArrayList<No> obterComposicao(Composicao composicao, Arvore arvore) {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<No> listaNos = new ArrayList<>();
+		ArrayList<NoAtravessado> listaAtravesados;
+		
+		for (No no: composicao.composicao()){
+			listaAtravesados = new ArrayList<>();
+			if (no.simbolo() != '$'){
+				arvoreDeBusca(no.esquerda(), false, listaNos, listaAtravesados, arvore);
+			}
+			
+		}
+		return listaNos;
+	}
+
+	private static void arvoreDeBusca(No no, boolean direcao, ArrayList<No> listaNos,
+			ArrayList<NoAtravessado> listaAtravesados, Arvore arvore) {
+		if (no == null || listaNos.contains(no)){
+			return;
+		}
+		
+		NoAtravessado noAtravessado = new NoAtravessado(no, direcao);
+		if (listaAtravesados.contains(noAtravessado)){
+			return;
+		}
+		else{
+			listaAtravesados.add(noAtravessado);
+		}
+		
+		if (!direcao){
+			switch (no.simbolo()) {
+			case '.':
+				arvoreDeBusca(no.esquerda(), false, listaNos, listaAtravesados, arvore);
+				break;
+			case '|':
+				arvoreDeBusca(no.esquerda(), false, listaNos, listaAtravesados, arvore);
+				arvoreDeBusca(no.direita(), false, listaNos, listaAtravesados, arvore);
+				break;
+			case '*':
+				arvoreDeBusca(no.esquerda(), false, listaNos, listaAtravesados, arvore);
+				arvoreDeBusca(no.direita(), true, listaNos, listaAtravesados, arvore);
+				break;
+			case '?':
+				arvoreDeBusca(no.esquerda(), false, listaNos, listaAtravesados, arvore);
+				arvoreDeBusca(no.direita(), true, listaNos, listaAtravesados, arvore);
+				break;
+			default:
+				if (!listaNos.contains(no)){
+					listaNos.add(no);
+				}
+				break;
+			}
+		}
+		else{
+			switch (no.simbolo()) {
+			case '.':
+				arvoreDeBusca(no.direita(), false, listaNos, listaAtravesados, arvore);
+				break;
+			case '|':
+				while (no.direita() != null){
+					no = no.direita();
+				}
+				arvoreDeBusca(no.costura(), true, listaNos, listaAtravesados, arvore);
+				break;
+			case '*':
+				arvoreDeBusca(no.esquerda(), false, listaNos, listaAtravesados, arvore);
+				arvoreDeBusca(no.costura(), true, listaNos, listaAtravesados, arvore);
+				break;
+			case '?':
+				arvoreDeBusca(no.costura(), true, listaNos, listaAtravesados, arvore);
+				break;
+			default:
+				if (no.simbolo() == '$'){
+					listaNos.add(no);
+				}
+				else {
+					arvoreDeBusca(no.costura(), true, listaNos, listaAtravesados, arvore);
+				}
+				break;
+			}
+		}
 	}
 
 
