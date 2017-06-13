@@ -1,6 +1,8 @@
 package AutomatoFinito;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -83,7 +85,7 @@ public class Automato extends Regular {
 	}
 	
 	public void remove(Estado estado){
-		this.transicoes.remover(estado);
+		this.transicoes.removerEstado(estado);
 		this.estados.remove(estado);
 		this.estadosFinais.remove(estado);
 		if (estado.equals(this.estadoInicial)){
@@ -95,7 +97,7 @@ public class Automato extends Regular {
 		return this.estados.contains(estado);
 	}
 	
-	//TODO: maquiagem - ordenarEstados ordenarAlfabeto
+	//TODO: maquiagem - ordenarEstados
 	
 	public ArrayList<Character> alfabeto(){
 		return this.alfabeto;
@@ -111,7 +113,7 @@ public class Automato extends Regular {
 	
 	public void remover(char simbolo){
 		if(this.alfabeto.contains(simbolo)){
-			this.transicoes.remover(simbolo);
+			this.transicoes.removerSimbolo(simbolo);
 			this.alfabeto.remove((Character) simbolo);
 		}
 	}
@@ -171,6 +173,11 @@ public class Automato extends Regular {
 				this.obterEpsilon(estado_auxiliar, estados);
 			}
 		}
+	}
+	
+	public void adicionar(Estado estado){
+		if(!estados.contains(estado))
+			estados.add(estado);
 	}
 	
 	public ArrayList<Estado> proximosEstados(Estado atual, char simbolo){
@@ -284,5 +291,27 @@ public class Automato extends Regular {
 		}
 		
 		return automato;
+	}
+
+	public void ordenarAlfabeto() {
+		Collections.sort(this.alfabeto, new Comparator<Character>() {
+			@Override
+			public int compare(Character o1, Character o2){
+				if (o1 == '&' && o2 != '&'){
+					return 1;
+				}
+				else if (o1 != '&' && o2 == '&'){
+					return -1;
+				}
+				return o1.compareTo(o2);
+			}
+		});
+		
+	}
+	
+	@Override
+	public String toString(){
+		
+		return "{ alfabeto: "+this.alfabeto+""+this.transicoes.toString()+"}";
 	}
 }

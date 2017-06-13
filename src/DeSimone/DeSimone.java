@@ -6,6 +6,17 @@ import AutomatoFinito.Estado;
 import java.util.HashMap;
 
 public class DeSimone {
+	
+	
+	public static Automato automato(String expressao_regular){
+		Automato automato = criarAutomato(expressao_regular);
+		automato.definirTitulo(expressao_regular);
+		automato.definirDescricao("Automato Finito Deterministico");
+		automato.ordenarAlfabeto();
+		return automato;
+	}
+	
+	
 
 	public static Automato criarAutomato(String expressao_regular) {
 		Arvore arvore = new Arvore(expressao_regular);
@@ -13,85 +24,76 @@ public class DeSimone {
 		
 		Automato automato = new Automato();
 
-		for (No no : arvore.obterFolhas())
+		for (No no : arvore.getListLeaves()){
 			automato.adicionar(no.simbolo());
+		}
 
 		Estado estado = new Estado("Q0");
 		automato.estadoInicial(estado);
 		Composicao composicao = new Composicao(estado);
-		composicao.no(arvore.obterRaiz());
+		composicao.no(arvore.getRoot());
 
-		criarAutomato(composicao, automato, arvore, mapa);
-
+		criarAutomatoRecursivamente(composicao, automato, arvore, mapa);
+		
 		return automato;
 	}
 
-	private static void criarAutomato(Composicao composicao, Automato automato, Arvore arvore,
-			HashMap<Composicao, ArrayList<No>> mapa) {
-		ArrayList<No> listaNos;
-		boolean igual = false;
-		ArrayList<No> nosDaComposicao = obterComposicao(composicao, arvore);
+	private static void criarAutomatoRecursivamente(Composicao sTmp, Automato af, Arvore tree,
+			HashMap<Composicao, ArrayList<No>> comp) {
 		
-		if (nosDaComposicao.size() == 0){
+		ArrayList<No> tmp;
+		boolean equal = false;
+		ArrayList<No> compTmp = obterComposicao(sTmp, tree);
+		if(compTmp.size() == 0)
 			return;
-		}
 		
-		for (Composicao chave_composicao: mapa.keySet()){
-			listaNos = mapa.get(chave_composicao);
-			igual = true;
-			for (No no: nosDaComposicao){
-				if (!listaNos.contains(no)){
-					igual = false;
-				}
+		for(Composicao s : comp.keySet()){
+			tmp = comp.get(s);
+			equal = true;
+			for(No n : compTmp){
+				if(!tmp.contains(n))
+					equal = false;
 			}
-			
-			if (igual && nosDaComposicao.size() == listaNos.size()){
-				automato.transicao(composicao.estado(), chave_composicao.estado());
+			if(equal && compTmp.size() == tmp.size()){
+				af.transicao(sTmp.estado(), s.estado());
 				break;
-			}
-			else if (igual && nosDaComposicao.size() != listaNos.size()){
-				igual = false;
+			}else if(equal && compTmp.size() != tmp.size()){
+				equal = false;
 			}
 		}
-		
-		if (!igual){
-			automato.estadoFinal(composicao.estado());
-			mapa.put(composicao, nosDaComposicao);
-			HashMap<Character, ArrayList<Estado>> novosEstados = new HashMap<>();
-			for (char simbolo : automato.alfabeto()){
-				novosEstados.put(simbolo, new ArrayList<>());
+		if(!equal){
+			af.adicionar(sTmp.estado());
+			comp.put(sTmp, compTmp);
+			
+			HashMap<Character, ArrayList<Estado>> newStates = new HashMap<>();
+			for(char c : af.alfabeto())
+				newStates.put(c, new ArrayList<>());
+			
+			for(No n : compTmp){
+				if(n.simbolo() != '$')
+					newStates.get(n.simbolo()).add(new Estado("Q"+n.numeroFolha()));
+				else
+					af.estadoFinal(sTmp.estado());
 			}
 			
-			for (No no: nosDaComposicao){
-				if (no.simbolo() != '$'){
-					novosEstados.get(no.simbolo()).add(new Estado("Q"+no.numeroFolha()));
-				}
-				else {
-					automato.adicionarEstadoFinal(composicao.estado());
-				}
-				
-				Composicao composicao_estado;
-				
-				ArrayList<Composicao> composicoes = new ArrayList<>();
-				
-				for(char simbolo: novosEstados.keySet()){
-					composicao_estado = new Composicao(new Estado(novosEstados.get(simbolo).toString()));
-					for (No no_local: nosDaComposicao){
-						if(no_local.simbolo() == simbolo){
-							composicao_estado.no(no);
-						}
-					}
-					automato.adicionar(composicao.estado(), simbolo, composicao_estado.estado());
-					composicoes.add(composicao_estado);
-				}
-				
-				for (Composicao composicao_local: composicoes){
-					criarAutomato(composicao_local, automato, arvore, mapa);
+			Composicao nState;
+			ArrayList<Composicao> tmp2 = new ArrayList<>();
+			for(char c : newStates.keySet()){
+				if(newStates.get(c).size() > 0){
+					nState = new Composicao(new Estado(newStates.get(c).toString()));
+					for(No n : compTmp)
+						if(n.simbolo() == c)
+							nState.no(n);
+					
+					af.adicionar(sTmp.estado(), c, nState.estado());
+					tmp2.add(nState);
 				}
 			}
+			for(Composicao s : tmp2)
+				criarAutomatoRecursivamente(s, af, tree, comp);
 		}
 	}
-
+	
 	private static ArrayList<No> obterComposicao(Composicao composicao, Arvore arvore) {
 		ArrayList<No> listaNos = new ArrayList<>();
 		ArrayList<NoAtravessado> listaAtravesados;

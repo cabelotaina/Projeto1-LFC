@@ -5,15 +5,17 @@ import java.util.HashMap;
 
 public class Transicoes {
   private HashMap<Estado, HashMap<Character, ArrayList<Estado>>> transicoes;
+  
   public Transicoes(){
 	  this.transicoes = new HashMap<>();
   }
+  
   public Transicoes(Transicoes transicoes){
 	 this.transicoes = new HashMap<>();
 	  HashMap<Estado, HashMap<Character, ArrayList<Estado>>> conexao = transicoes.obter();
 	  
 	  for(Estado estado : conexao.keySet()){
-		  this.transicoes.put(estado, new HashMap<>());
+		  this.transicoes.put(new Estado(estado), new HashMap<>());
 		  for(char c : conexao.get(estado).keySet()){
 			  this.transicoes.get(estado).put(c, new ArrayList<>(conexao.get(estado).get(c)));
 		  }
@@ -51,7 +53,7 @@ public class Transicoes {
 	  return this.transicoes.get(atual).get(simbolo);
   }
   
-  public void remover(char simbolo){
+  public void removerSimbolo(char simbolo){
 	  for(Estado estado: this.transicoes.keySet()){
 		  if(this.transicoes.get(estado).containsKey(simbolo)){
 			 this.transicoes.get(estado).remove(simbolo);
@@ -59,7 +61,7 @@ public class Transicoes {
 	  }
   }
   
-  public void remover(Estado estado){
+  public void removerEstado(Estado estado){
 	  this.transicoes.remove(estado);
 	  for(Estado estadoAux:this.transicoes.keySet()){
 		  for(char c : this.transicoes.get(estadoAux).keySet()){
@@ -84,6 +86,6 @@ public class Transicoes {
   
   @Override
   public String toString(){
-	  return "{ transi��es: "+this.transicoes+" }";
+	  return "{ transicoes: "+this.transicoes.size()+" }";
   }
 }

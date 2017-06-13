@@ -80,7 +80,7 @@ public class No {
 	  return this.simbolo;
   }
   
-  public void nome(char nome){
+  public void simbolo(char nome){
 	  this.simbolo = nome;
   }
   
@@ -124,4 +124,8 @@ public class No {
 	  }
 	  return false; 
   }
+
+public void setIsCosturado(boolean costurado) {
+	this.costurado = costurado;
+}
 }

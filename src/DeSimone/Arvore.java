@@ -4,141 +4,155 @@ import java.util.ArrayList;
 import java.util.Stack;
 
 public class Arvore {
-	private No raiz;
-	private ArrayList<No> listaDeFolhas;
-	public static final String operadoresPermitidos = "()*+.|?";
-
-	public Arvore(String expressao_regular) {
-		raiz = criarSubArvores(null, expressao_regular);
-		listaDeFolhas = new ArrayList<>();
-		adicionarFolhasEmOrdem();
-		costurarEmOrdem(raiz);
+	private No root;
+	private ArrayList<No> listLeaves;
+	public static final String allowedOps = 
+			"()*+.|?";
+	
+	public Arvore(String regEx) {
+		root = createSubArvores(null, regEx);
+		listLeaves = new ArrayList<>();
+		addLeavesInOrder();
+		costuraEmOrderRec(root);
+		
+		System.out.println(listLeaves);
+		printPreOrderRec(root);
+	}
+	
+	public No getRoot(){
+		return this.root;
+	}
+	
+	public ArrayList<No> getListLeaves(){
+		return this.listLeaves;
 	}
 
-	public void adicionarFolhasEmOrdem(){
-	  Stack<No> pilhaDeNos = new Stack<>();
-	  No no = this.raiz;
-	  int numeroFolha = 1;
-	  
-	  while (!pilhaDeNos.isEmpty() || no != null){
-		  if (no != null){
-			  pilhaDeNos.push(no);
-			  no = no.esquerda();
-		  }
-		  else {
-			  no = pilhaDeNos.pop();
-			  if (!Arvore.operador(no.simbolo(),false)){
-				  no.numeroFolha(numeroFolha);
-				  this.listaDeFolhas.add(no);
-				  numeroFolha++;
-			  }
-			  no = no.direita();
-		  }
-	  }
-  }
-
-	public static boolean operador(char c, boolean comParenteses) {
-		if (!comParenteses) {
-			return operadoresPermitidos.substring(2, operadoresPermitidos.length()).indexOf(c) != -1;
-		}
-		return operadoresPermitidos.indexOf(c) != -1;
+	private No createSubArvores(No n, String regEx) {
+		No newNodo = new No();
+		SubArvore sub = SubArvore.obterInstancia();
+		
+		regEx = removeExternalParentheses(regEx);
+		int raiz = sub.posicaoDaRaiz(regEx);
+		
+		if(raiz == -1 && regEx.length() > 1)
+			return createSubArvores(n, regEx);
+		else if(raiz == -1 && regEx.length() == 1)
+			return new No(regEx.charAt(0), n);
+		
+		newNodo.simbolo(regEx.charAt(raiz));
+		newNodo.raiz(n);
+		
+		String erEsq = regEx.substring(0, raiz);
+		String erDir = regEx.substring(raiz+1, regEx.length());
+		
+		if(erEsq.length() > 1)
+			newNodo.esquerda(createSubArvores(newNodo, erEsq));
+		else if(erEsq.length() == 1)
+			newNodo.esquerda(new No(erEsq.charAt(0), newNodo));
+		
+		if(erDir.length() > 1)
+			newNodo.direita(createSubArvores(newNodo, erDir));
+		else if(erDir.length() == 1)
+			newNodo.direita(new No(erDir.charAt(0), newNodo));
+		
+		return newNodo;
 	}
-
-	public void costurarEmOrdem(No no) {
-		if (no == null) {
+	
+	private String removeExternalParentheses(String regEx){
+		String tmp = regEx;
+		Stack<Character> stackParentheses = new Stack<>();
+		char cTmp;
+		
+		if(tmp.charAt(0) == '(' && tmp.charAt(regEx.length()-1) == ')'){
+			if(tmp.charAt(0) == '(' && tmp.charAt(tmp.length()-1) == ')')
+				tmp = "[" +tmp.substring((1), tmp.length()-1)+ "]";
+				
+			for (int i = 0; i < tmp.length(); i++) {
+				cTmp = tmp.charAt(i);
+				if(cTmp == '[')
+					stackParentheses.push('[');
+				else if(cTmp == ']' && stackParentheses.peek() == '[')
+					stackParentheses.pop();
+				else if(cTmp == '(' && 
+						(stackParentheses.peek() == '(' || 
+						stackParentheses.peek() == '['))
+					stackParentheses.push('(');
+				else if(cTmp == ')' && stackParentheses.peek() == '(')
+					stackParentheses.pop();
+			}
+			
+			if(stackParentheses.isEmpty())
+				return tmp.substring(1, tmp.length()-1);
+			else
+				return regEx;
+		}else
+			return regEx;
+	}
+	
+	private void costuraEmOrderRec(No root){
+		if(root == null)
 			return;
-		}
-
-		costurarEmOrdem(no.esquerda());
-
-		if (!Arvore.binario(no.simbolo())) {
-			No raiz = no.raiz();
-			if (raiz != null) {
-				while (raiz.costurado()) {
-					raiz = raiz.raiz();
-					if (raiz == null) {
-						no.costura(new No('$', null));
+		
+		costuraEmOrderRec(root.esquerda());
+		
+		if(!isBinaryOperator(root.simbolo())){
+			No pai = root.raiz();
+			if(pai != null){
+				while(pai.costurado()){
+					pai = pai.raiz();
+					if(pai == null){
+						root.costura(new No('$', null));//No lambda
 						return;
 					}
 				}
-			} else {
-				no.costura(new No('$', null));
-			}
+				root.costura(pai);
+				pai.setIsCosturado(true);
+			}else
+				root.costura(new No('$', null));
 		}
-		costurarEmOrdem(no.direita());
+		
+		costuraEmOrderRec(root.direita());
 	}
+	
+	private void addLeavesInOrder(){
+		Stack<No> stackNos = new Stack<>();
+		No n = root;
+		int num = 1;
 
-	public static boolean binario(char operador) {
-		return (operador == '|' || operador == '.');
-	}
-
-	public No obterRaiz() {
-		return this.raiz;
-	}
-
-	public ArrayList<No> obterFolhas() {
-		return this.listaDeFolhas;
-	}
-
-	public No criarSubArvores(No no, String expressao_regular) {
-		No novoNo = new No();
-		SubArvore subArvore = SubArvore.obterInstancia();
-
-		expressao_regular = removerParenteses(expressao_regular);
-		int raiz = subArvore.posicaoDaRaiz(expressao_regular);
-		if (raiz == -1 && expressao_regular.length() > 1) {
-			return criarSubArvores(no, expressao_regular);
-		} else if (raiz == -1 && expressao_regular.length() == 1) {
-			return new No(expressao_regular.charAt(0), no);
-		}
-
-		novoNo.nome(expressao_regular.charAt(raiz));
-		novoNo.raiz(no);
-
-		String esquerda = expressao_regular.substring(0, raiz);
-		String direita = expressao_regular.substring(raiz + 1, expressao_regular.length());
-
-		if (esquerda.length() > 1) {
-			novoNo.esquerda(this.criarSubArvores(novoNo, esquerda));
-		} else if (esquerda.length() == 1) {
-			novoNo.esquerda(new No(esquerda.charAt(0), novoNo));
-		}
-
-		if (direita.length() > 1) {
-			novoNo.direita(criarSubArvores(novoNo, direita));
-		} else if (direita.length() == 1) {
-			novoNo.direita(new No(direita.charAt(0), novoNo));
-		}
-		return novoNo;
-	}
-
-	public String removerParenteses(String expressao_regular) {
-		String copia_er = expressao_regular;
-		Stack<Character> pilhaParenteses = new Stack<>();
-		char simbolo;
-
-		if (copia_er.charAt(0) == '(' && copia_er.charAt(expressao_regular.length() - 1) == ')') {
-			copia_er = "[" + copia_er.substring((1), copia_er.length() - 1) + "]";
-			for (int posicao = 0; posicao < copia_er.length(); posicao++) {
-				simbolo = copia_er.charAt(posicao);
-				if (simbolo == '[') {
-					pilhaParenteses.push('[');
-				} else if (simbolo == '(' && pilhaParenteses.peek() == '[') {
-					pilhaParenteses.pop();
-				} else if (simbolo == '(' && (pilhaParenteses.peek() == '(' || pilhaParenteses.peek() == '[')) {
-					pilhaParenteses.push('(');
-				} else if (simbolo == ')' && pilhaParenteses.peek() == '(') {
-					pilhaParenteses.pop();
+		while(!stackNos.isEmpty() || n != null){
+			if(n != null){
+				stackNos.push(n);
+				n = n.esquerda();
+			}else{
+				n = stackNos.pop();
+				if(!isOperator(n.simbolo(),false)){
+					n.numeroFolha(num);
+					listLeaves.add(n);
+					++num;
 				}
+				n = n.direita();
 			}
-
-			if (pilhaParenteses.isEmpty()) {
-				return copia_er.substring(1, copia_er.length() - 1);
-			} else {
-				return expressao_regular;
-			}
-		} else {
-			return expressao_regular;
+		}
+		
+	}
+	
+	public void printPreOrderRec(No root){
+		if(root != null){
+			System.out.println("E: "+root.esquerda()+" - R: "+root+" - D: "+root.direita()+" - Cost: "+root.costura());
+			printPreOrderRec(root.esquerda());
+			printPreOrderRec(root.direita());
 		}
 	}
+	
+	public static boolean isOperator(char c, boolean withParentheses){
+		if(!withParentheses)
+			return allowedOps.substring(2, allowedOps.length()).indexOf(c) != -1;
+		else
+			return allowedOps.indexOf(c) != -1;
+	}
+	
+	public static boolean isBinaryOperator(char c){
+		return (c=='|' || c=='.');
+	}
+	
 }
