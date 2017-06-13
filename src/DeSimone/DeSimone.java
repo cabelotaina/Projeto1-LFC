@@ -1,53 +1,61 @@
-package DeSimone;
+package desimone;
 
 import java.util.ArrayList;
-import AutomatoFinito.Automato;
-import AutomatoFinito.Estado;
 import java.util.HashMap;
 
-public class DeSimone {
+import automato.Automato;
+import automato.Estado;
+import expressao_regular.ControleER;
+
+public abstract class DeSimone {
 	
-	
-	public static Automato automato(String expressao_regular){
-		Automato automato = criarAutomato(expressao_regular);
-		automato.definirTitulo(expressao_regular);
-		automato.definirDescricao("Automato Finito Deterministico");
-		automato.ordenarAlfabeto();
-		return automato;
+	public DeSimone() {
 	}
 	
-	
-
-	public static Automato criarAutomato(String expressao_regular) {
-		Arvore arvore = new Arvore(expressao_regular);
-		HashMap<Composicao, ArrayList<No>> mapa = new HashMap<>();
+	/**
+	 * Função responsavel por criar o AFD apartir de uma 
+	 * Expressão Regular dada, utilizando o algoritmo De Simone.
+	 * 
+	 * @param regEx		Expressão regular que se quer achar o AFD.
+	 * @return			AFD equivalente a Expressão Regular dada.
+	 */
+	public static Automato createAutomaton(String regEx){
+		Arvore tree = new Arvore(regEx);
+		HashMap<ComposicaoEstados, ArrayList<No>> comp = new HashMap<>();//composicao de estados
+		Automato af = new Automato();
 		
-		Automato automato = new Automato();
-
-		for (No no : arvore.getListLeaves()){
-			automato.adicionar(no.simbolo());
-		}
-
-		Estado estado = new Estado("Q0");
-		automato.estadoInicial(estado);
-		Composicao composicao = new Composicao(estado);
-		composicao.no(arvore.getRoot());
-
-		criarAutomatoRecursivamente(composicao, automato, arvore, mapa);
+		for(No n : tree.getListLeaves())
+			af.adicionarSimbolo(n.getC());
 		
-		return automato;
+		Estado sTmp = new Estado("Q0");
+			af.estadoInicial(sTmp);
+		ComposicaoEstados cState = new ComposicaoEstados(sTmp);
+			cState.addNode(tree.getRoot());
+		
+		createAutomatonRec(cState, af, tree, comp);	
+		
+		return af;
 	}
 
-	private static void criarAutomatoRecursivamente(Composicao sTmp, Automato af, Arvore tree,
-			HashMap<Composicao, ArrayList<No>> comp) {
+	/**
+	 * Função recursiva interna que cria o AFD equivalente a ER dada.
+	 * 
+	 * @param sTmp		Estado atual da recursão.
+	 * @param af		AFD que esta sendo criado.
+	 * @param tree		Arvore base.
+	 * @param comp		HashMap que contem o estado base como key e 
+	 * 					a lista de nodos da sua composição como value.
+	 */
+	private static void createAutomatonRec(ComposicaoEstados sTmp, Automato af, Arvore tree,
+			HashMap<ComposicaoEstados, ArrayList<No>> comp) {
 		
 		ArrayList<No> tmp;
 		boolean equal = false;
-		ArrayList<No> compTmp = obterComposicao(sTmp, tree);
+		ArrayList<No> compTmp = getComposition(sTmp, tree);
 		if(compTmp.size() == 0)
 			return;
 		
-		for(Composicao s : comp.keySet()){
+		for(ComposicaoEstados s : comp.keySet()){
 			tmp = comp.get(s);
 			equal = true;
 			for(No n : compTmp){
@@ -55,14 +63,14 @@ public class DeSimone {
 					equal = false;
 			}
 			if(equal && compTmp.size() == tmp.size()){
-				af.transicao(sTmp.estado(), s.estado());
+				af.transicaoParaProximoEstado(sTmp.getState(), s.getState());
 				break;
 			}else if(equal && compTmp.size() != tmp.size()){
 				equal = false;
 			}
 		}
 		if(!equal){
-			af.adicionar(sTmp.estado());
+			af.adicionarEstado(sTmp.getState());
 			comp.put(sTmp, compTmp);
 			
 			HashMap<Character, ArrayList<Estado>> newStates = new HashMap<>();
@@ -70,111 +78,125 @@ public class DeSimone {
 				newStates.put(c, new ArrayList<>());
 			
 			for(No n : compTmp){
-				if(n.simbolo() != '$')
-					newStates.get(n.simbolo()).add(new Estado("Q"+n.numeroFolha()));
+				if(n.getC() != '$')
+					newStates.get(n.getC()).add(new Estado("Q"+n.getNumero()));
 				else
-					af.estadoFinal(sTmp.estado());
+					af.estadoFinal(sTmp.getState());
 			}
 			
-			Composicao nState;
-			ArrayList<Composicao> tmp2 = new ArrayList<>();
+			ComposicaoEstados nState;
+			ArrayList<ComposicaoEstados> tmp2 = new ArrayList<>();
 			for(char c : newStates.keySet()){
 				if(newStates.get(c).size() > 0){
-					nState = new Composicao(new Estado(newStates.get(c).toString()));
+					nState = new ComposicaoEstados(new Estado(newStates.get(c).toString()));
 					for(No n : compTmp)
-						if(n.simbolo() == c)
-							nState.no(n);
+						if(n.getC() == c)
+							nState.addNode(n);
 					
-					af.adicionar(sTmp.estado(), c, nState.estado());
+					af.adicionarTransicao(sTmp.getState(), c, nState.getState());
 					tmp2.add(nState);
 				}
 			}
-			for(Composicao s : tmp2)
-				criarAutomatoRecursivamente(s, af, tree, comp);
+			for(ComposicaoEstados s : tmp2)
+				createAutomatonRec(s, af, tree, comp);
 		}
 	}
 	
-	private static ArrayList<No> obterComposicao(Composicao composicao, Arvore arvore) {
-		ArrayList<No> listaNos = new ArrayList<>();
-		ArrayList<NoAtravessado> listaAtravesados;
+	/**
+	 * Função interna que pega os nodos da composição de um estado 
+	 * do AF.
+	 * 
+	 * @param sTmp		Estado que se quer achar a composição.
+	 * @param tree		Arvore base.
+	 * @return			Lista de nodos que são a composição do estado dado.
+	 */
+	private static ArrayList<No> getComposition(ComposicaoEstados sTmp, Arvore tree) {
 		
-		for (No no: composicao.composicao()){
-			listaAtravesados = new ArrayList<>();
-			if (no.simbolo() != '$'){
-				arvoreDeBusca(no.esquerda(), false, listaNos, listaAtravesados, arvore);
-			}
-			
+		ArrayList<No> result = new ArrayList<>();
+		ArrayList<NoAtravesado> traversed;
+		for(No n : sTmp.getComposition()){
+			traversed  = new ArrayList<>();
+			if(n.getC() != '$')
+				searchTree(n, !ControleER.isOperator(n.getC(),false), result, traversed, tree);
 		}
-		return listaNos;
+		
+		return result;
 	}
-
-	private static void arvoreDeBusca(No no, boolean direcao, ArrayList<No> listaNos,
-			ArrayList<NoAtravessado> listaAtravesados, Arvore arvore) {
-		if (no == null || listaNos.contains(no)){
-			return;
-		}
+	
+	/**
+	 * Função recursiva interna usada para 'explorar' a arvore
+	 * gerada apatir da expressão regular que se quer criar o 
+	 * AFD.
+	 * 
+	 * @param n			Nodo atual da recursão.
+	 * @param dir		Direção de exploração da arvore.
+	 * 					TRUE => subindo na arvore,
+	 * 					FALSE => descendo na arvore.
+	 * @param result	Nodos folhas achados pela exploração.
+	 * @param traversed 
+	 * @param tree		Arvore base.
+	 */
+	private static void searchTree(No n, boolean dir, ArrayList<No> result, 
+			ArrayList<NoAtravesado> traversed, Arvore tree) {
 		
-		NoAtravessado noAtravessado = new NoAtravessado(no, direcao);
-		if (listaAtravesados.contains(noAtravessado)){
+		if(n == null || result.contains(n))
 			return;
-		}
-		else{
-			listaAtravesados.add(noAtravessado);
-		}
 		
-		if (!direcao){
-			switch (no.simbolo()) {
+		// Verificação se o nodo ja foi percorrido nessa direção.
+		NoAtravesado nt = new NoAtravesado(n, dir);
+		if(traversed.contains(nt))
+			return;
+		else
+			traversed.add(nt);
+		
+		if(!dir){//descida
+			switch (n.getC()) {
+				case '.':
+					searchTree(n.getFilhoEsq(), false, result, traversed, tree);
+					break;
+				case '|':
+					searchTree(n.getFilhoEsq(), false, result, traversed, tree); 
+					searchTree(n.getFilhoDir(), false, result, traversed, tree);
+					break;
+				case '*':
+					searchTree(n.getFilhoEsq(), false, result, traversed, tree);
+					searchTree(n.getCostura(), true, result, traversed, tree); 
+					break;
+				case '?':
+					searchTree(n.getFilhoEsq(), false, result, traversed, tree);
+					searchTree(n.getCostura(), true, result, traversed, tree); 
+					break;
+				default: //folha
+					if(!result.contains(n))
+						result.add(n);
+					break;
+			}
+		}else{//subida
+			switch (n.getC()) {
 			case '.':
-				arvoreDeBusca(no.esquerda(), false, listaNos, listaAtravesados, arvore);
+				searchTree(n.getFilhoDir(), false, result, traversed, tree);
 				break;
 			case '|':
-				arvoreDeBusca(no.esquerda(), false, listaNos, listaAtravesados, arvore);
-				arvoreDeBusca(no.direita(), false, listaNos, listaAtravesados, arvore);
+				while(n.getFilhoDir() != null){
+					n = n.getFilhoDir();
+				}
+				searchTree(n.getCostura(), true, result, traversed, tree);
 				break;
 			case '*':
-				arvoreDeBusca(no.esquerda(), false, listaNos, listaAtravesados, arvore);
-				arvoreDeBusca(no.direita(), true, listaNos, listaAtravesados, arvore);
+				searchTree(n.getFilhoEsq(), false, result, traversed, tree);
+				searchTree(n.getCostura(), true, result, traversed, tree);
 				break;
 			case '?':
-				arvoreDeBusca(no.esquerda(), false, listaNos, listaAtravesados, arvore);
-				arvoreDeBusca(no.direita(), true, listaNos, listaAtravesados, arvore);
+				searchTree(n.getCostura(), true, result, traversed, tree); 
 				break;
-			default:
-				if (!listaNos.contains(no)){
-					listaNos.add(no);
-				}
+			default://folha
+				if(n.getC() == '$')
+					result.add(n);
+				else 
+					searchTree(n.getCostura(), true, result, traversed, tree);
 				break;
 			}
 		}
-		else {
-			switch (no.simbolo()) {
-			case '.':
-				arvoreDeBusca(no.direita(), false, listaNos, listaAtravesados, arvore);
-				break;
-			case '|':
-				while (no.direita() != null){
-					no = no.direita();
-				}
-				arvoreDeBusca(no.costura(), true, listaNos, listaAtravesados, arvore);
-				break;
-			case '*':
-				arvoreDeBusca(no.esquerda(), false, listaNos, listaAtravesados, arvore);
-				arvoreDeBusca(no.costura(), true, listaNos, listaAtravesados, arvore);
-				break;
-			case '?':
-				arvoreDeBusca(no.costura(), true, listaNos, listaAtravesados, arvore);
-				break;
-			default:
-				if (no.simbolo() == '$'){
-					listaNos.add(no);
-				}
-				else {
-					arvoreDeBusca(no.costura(), true, listaNos, listaAtravesados, arvore);
-				}
-				break;
-			}
-		}
-	}
-
-
+	} 
+	
 }

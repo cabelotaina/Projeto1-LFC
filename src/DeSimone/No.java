@@ -1,131 +1,131 @@
-package DeSimone;
+package desimone;
 
 public class No {
-  private No raiz, esquerda, direita, costura;
-  
-  private char simbolo;
-  
-  private int numeroFolha;
-  
-  private int id;
-  
-  private boolean costurado;
-  
-  private static int codigo;
-  
-  public No(){
-	  id = codigo;
-	  codigo++; 
-  }
-  
-  public No(char nome, No pai){
-	  this.simbolo = nome;
-	  this.raiz = pai;
-	  id = codigo;
-	  codigo++;
-  }
-  
-  public No(No pai, No esquerda, No direita, char nome){
-	  this.raiz = pai;
-	  this.esquerda = esquerda;
-	  this.direita = direita;
-	  this.simbolo = nome;
-	  
-	  id = codigo;
-	  codigo++;
-  }
-  
-  public No raiz(){
-	  return raiz;
-  }
-  
-  public void raiz(No raiz){
-	  this.raiz = raiz;
-  }
-  
-  public No esquerda(){
-	  return this.esquerda;
-  }
-  
-  public void esquerda(No esquerda){
-	  this.esquerda = esquerda;
-  }
-  
-  public No direita(){
-	  return this.direita;
-  }
-  
-  public void direita(No direita){
-	  this.direita = direita;
-  }
-  
-  public No costura(){
-	  return this.costura;
-  }
-  
-  public void costura(No costura){
-	  this.costurado = true;
-	  this.costura = costura;
-  }
-  
-  public int numeroFolha(){
-	  return this.numeroFolha;
-  }
-  
-  public void numeroFolha(int numero){
-	  this.numeroFolha = numero;
-  }
-  
-  public char simbolo(){
-	  return this.simbolo;
-  }
-  
-  public void simbolo(char nome){
-	  this.simbolo = nome;
-  }
-  
-  public boolean costurado(){
-	  return this.costurado;
-  }
-  
-  @Override
-  public String toString(){
-	  String label;
-	  if (this.numeroFolha>0){
-		  label = "["+this.numeroFolha+"]";
-	  }
-	  else{
-		  label = "["+this.simbolo+"]";
-	  }
-	  return label;
-  }
-  
-  @Override
-  public int hashCode(){
-	  final int primeiro = 31;
-	  int resultado = 1;
-	  resultado = primeiro * resultado + this.simbolo;
-	  resultado = primeiro * resultado + this.numeroFolha;
-	  resultado = primeiro * resultado + this.id;
-	  return resultado;
-  }
-  
-  @Override
-  public boolean equals(Object objeto){
-	  if (this == objeto){
-		  return true;
-	  }
-	  if (objeto == null || getClass() != objeto.getClass()){
-		  return false;
-	  }
-	  No no = (No) objeto;
-	  if (this.simbolo == no.simbolo && this.numeroFolha == no.numeroFolha && this.costurado == no.costurado){
-		  return true;
-	  }
-	  return false; 
-  }
+	private No pai, filhoEsq, filhoDir, costura;
+	// 'label' do nodo
+	private char c;
+	// numero usado nas folhas
+	private int numero;
+	// codigo utilizado para diferenciar os nodos 
+	private int innerCode;
+	// ja existe uma costura que leva a este nodo?
+	private boolean isCosturado;
+	private static int code;
+	
+	public No(){	
+		innerCode = code;
+		code += 1;
+	}
+	
+	public No(char c, No pai){
+		this.c = c;
+		this.pai = pai;
+		
+		innerCode = code;
+		code += 1;
+	}
+	
+	public No(No pai, No filhoEsq, No filhoDir, char c){
+		this.pai = pai;
+		this.filhoEsq = filhoEsq;
+		this.filhoDir = filhoDir;
+		this.c = c;
+		
+		innerCode = code;
+		code += 1;
+	}
+	
+	// Pai
+	public No getPai() {
+		return pai;
+	}
 
-public void setIsCosturado(boolean costurado) {
-	this.costurado = costurado;
-}
+	public void setPai(No pai) {
+		this.pai = pai;
+	}
+	
+	// Filho Esquerda
+	public No getFilhoEsq() {
+		return filhoEsq;
+	}
+
+	public void setFilhoEsq(No filhoEsq) {
+		this.filhoEsq = filhoEsq;
+	}
+	
+	// Filho Direita
+	public No getFilhoDir() {
+		return filhoDir;
+	}
+
+	public void setFilhoDir(No filhoDir) {
+		this.filhoDir = filhoDir;
+	}
+	
+	// Costura
+	public No getCostura() {
+		return costura;
+	}
+
+	public void setCostura(No costura) {
+		this.costura = costura;
+	}
+	
+	// Conteudo
+	public char getC() {
+		return c;
+	}
+
+	public void setC(char c) {
+		this.c = c;
+	}
+	
+	// Numero
+	public int getNumero() {
+		return numero;
+	}
+
+	public void setNumero(int numero) {
+		this.numero = numero;
+	}
+	
+	// isCosturado
+	public boolean isCosturado(){
+		return this.isCosturado;
+	}
+	
+	public void setIsCosturado(boolean c){
+		this.isCosturado = c;
+	}
+
+	@Override
+	public String toString() {
+		return "["+(numero>0?numero:"")+c+"]";
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + c;
+		result = prime * result + numero;
+		result = prime * result + innerCode;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null || getClass() != obj.getClass())
+			return false;
+		No other = (No) obj;
+		if (c != other.c)
+			return false;
+		if (numero != other.numero)
+			return false;
+		if(innerCode != other.innerCode)
+			return false;
+		return true;
+	}
 }

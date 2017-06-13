@@ -1,16 +1,16 @@
-package DeSimone;
+package desimone;
 
 import java.util.ArrayList;
 import java.util.Stack;
 
+import expressao_regular.ControleER;
+
 public class Arvore {
 	private No root;
 	private ArrayList<No> listLeaves;
-	public static final String allowedOps = 
-			"()*+.|?";
 	
 	public Arvore(String regEx) {
-		root = createSubArvores(null, regEx);
+		root = createSubTrees(null, regEx);
 		listLeaves = new ArrayList<>();
 		addLeavesInOrder();
 		costuraEmOrderRec(root);
@@ -27,33 +27,33 @@ public class Arvore {
 		return this.listLeaves;
 	}
 
-	private No createSubArvores(No n, String regEx) {
+	private No createSubTrees(No n, String regEx) {
 		No newNodo = new No();
-		SubArvore sub = SubArvore.obterInstancia();
+		SubArvore sub = SubArvore.getInstance();
 		
 		regEx = removeExternalParentheses(regEx);
-		int raiz = sub.posicaoDaRaiz(regEx);
+		int raiz = sub.positionOfRoot(regEx);
 		
 		if(raiz == -1 && regEx.length() > 1)
-			return createSubArvores(n, regEx);
+			return createSubTrees(n, regEx);
 		else if(raiz == -1 && regEx.length() == 1)
 			return new No(regEx.charAt(0), n);
 		
-		newNodo.simbolo(regEx.charAt(raiz));
-		newNodo.raiz(n);
+		newNodo.setC(regEx.charAt(raiz));
+		newNodo.setPai(n);
 		
 		String erEsq = regEx.substring(0, raiz);
 		String erDir = regEx.substring(raiz+1, regEx.length());
 		
 		if(erEsq.length() > 1)
-			newNodo.esquerda(createSubArvores(newNodo, erEsq));
+			newNodo.setFilhoEsq(createSubTrees(newNodo, erEsq));
 		else if(erEsq.length() == 1)
-			newNodo.esquerda(new No(erEsq.charAt(0), newNodo));
+			newNodo.setFilhoEsq(new No(erEsq.charAt(0), newNodo));
 		
 		if(erDir.length() > 1)
-			newNodo.direita(createSubArvores(newNodo, erDir));
+			newNodo.setFilhoDir(createSubTrees(newNodo, erDir));
 		else if(erDir.length() == 1)
-			newNodo.direita(new No(erDir.charAt(0), newNodo));
+			newNodo.setFilhoDir(new No(erDir.charAt(0), newNodo));
 		
 		return newNodo;
 	}
@@ -93,44 +93,44 @@ public class Arvore {
 		if(root == null)
 			return;
 		
-		costuraEmOrderRec(root.esquerda());
+		costuraEmOrderRec(root.getFilhoEsq());
 		
-		if(!isBinaryOperator(root.simbolo())){
-			No pai = root.raiz();
+		if(!ControleER.isBinaryOperator(root.getC())){
+			No pai = root.getPai();
 			if(pai != null){
-				while(pai.costurado()){
-					pai = pai.raiz();
+				while(pai.isCosturado()){
+					pai = pai.getPai();
 					if(pai == null){
-						root.costura(new No('$', null));//No lambda
+						root.setCostura(new No('$', null));//node lambda
 						return;
 					}
 				}
-				root.costura(pai);
+				root.setCostura(pai);
 				pai.setIsCosturado(true);
 			}else
-				root.costura(new No('$', null));
+				root.setCostura(new No('$', null));
 		}
 		
-		costuraEmOrderRec(root.direita());
+		costuraEmOrderRec(root.getFilhoDir());
 	}
 	
 	private void addLeavesInOrder(){
-		Stack<No> stackNos = new Stack<>();
+		Stack<No> stackNodes = new Stack<>();
 		No n = root;
 		int num = 1;
 
-		while(!stackNos.isEmpty() || n != null){
+		while(!stackNodes.isEmpty() || n != null){
 			if(n != null){
-				stackNos.push(n);
-				n = n.esquerda();
+				stackNodes.push(n);
+				n = n.getFilhoEsq();
 			}else{
-				n = stackNos.pop();
-				if(!isOperator(n.simbolo(),false)){
-					n.numeroFolha(num);
+				n = stackNodes.pop();
+				if(!ControleER.isOperator(n.getC(),false)){
+					n.setNumero(num);
 					listLeaves.add(n);
 					++num;
 				}
-				n = n.direita();
+				n = n.getFilhoDir();
 			}
 		}
 		
@@ -138,21 +138,9 @@ public class Arvore {
 	
 	public void printPreOrderRec(No root){
 		if(root != null){
-			System.out.println("E: "+root.esquerda()+" - R: "+root+" - D: "+root.direita()+" - Cost: "+root.costura());
-			printPreOrderRec(root.esquerda());
-			printPreOrderRec(root.direita());
+			System.out.println("E: "+root.getFilhoEsq()+" - R: "+root+" - D: "+root.getFilhoDir()+" - Cost: "+root.getCostura());
+			printPreOrderRec(root.getFilhoEsq());
+			printPreOrderRec(root.getFilhoDir());
 		}
 	}
-	
-	public static boolean isOperator(char c, boolean withParentheses){
-		if(!withParentheses)
-			return allowedOps.substring(2, allowedOps.length()).indexOf(c) != -1;
-		else
-			return allowedOps.indexOf(c) != -1;
-	}
-	
-	public static boolean isBinaryOperator(char c){
-		return (c=='|' || c=='.');
-	}
-	
 }
