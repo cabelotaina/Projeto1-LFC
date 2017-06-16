@@ -6,7 +6,7 @@ import java.util.HashMap;
 import automato.Automato;
 import automato.ControleAF;
 import db.RegularDao;
-import DeSimone.DeSimone;
+import desimone.DeSimone;
 import expressao_regular.ControleER;
 import gramatica.Gramatica;
 import gramatica.ControleGR;
@@ -69,7 +69,7 @@ public class Main {
 	private void initList(){
 		ArrayList<Regular> regs = null;
 		try {
-			regs = dao.getAll();
+			regs = dao.obterTudo();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -179,7 +179,7 @@ public class Main {
 		regulares.put(titulo, regular); 
 		ui.addInTheList(titulo);
 		
-		dao.addRegular(regular);
+		dao.adicionarRegular(regular);
 		
 		setRightContent(side, "GR/ER", regular, true);
 		createExtras(side);
@@ -214,7 +214,7 @@ public class Main {
 		regular.extras(regulares.get(titulo).extras());
 		regulares.put(titulo, regular);
 		
-		dao.editRegular(regular);
+		dao.editarRegular(regular);
 		
 		updateRightContentPanel(side, "GR/ER", regular, true);
 	}
@@ -362,7 +362,7 @@ public class Main {
 		
 		if(updateExtras){
 			addExtra(side, "AFD");
-			dao.setExtras(getRegular(side, "GR/ER"));
+			dao.definirExtras(getRegular(side, "GR/ER"));
 		}
 
 		if(isSameGrErInBothPanels())
@@ -405,7 +405,7 @@ public class Main {
 		
 		if(updateExtras){
 			addExtra(side, "AFD|AFD_Comp");
-			dao.setExtras(getRegular(side, "GR/ER"));
+			dao.definirExtras(getRegular(side, "GR/ER"));
 		}
 		
 		if(isSameGrErInBothPanels())
@@ -477,7 +477,7 @@ public class Main {
 		
 		if(updateExtras){
 			addExtra(side, "AFD|AFD_Min");
-			dao.setExtras(getRegular(side, "GR/ER"));
+			dao.definirExtras(getRegular(side, "GR/ER"));
 		}
 		
 		if(isSameGrErInBothPanels())

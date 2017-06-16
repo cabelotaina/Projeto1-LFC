@@ -1,7 +1,7 @@
 package expressao_regular;
 
 import automato.Automato;
-import DeSimone.DeSimone;
+import desimone.DeSimone;
 
 public class ControleER {
 	

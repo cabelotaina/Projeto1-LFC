@@ -16,7 +16,7 @@ public class RegularDao extends Dao {
 		super();
 	}
 	
-	public void addRegular(Regular r) throws Exception {
+	public void adicionarRegular(Regular r) throws Exception {
 		if(r.ehAutomato()){
 			System.out.println("RegularDao > Soh eh possivel adicionar GRs ou ERs!");
 			return;
@@ -34,7 +34,7 @@ public class RegularDao extends Dao {
 		this.insert(dados);
 	}
 	
-	public void editRegular(Regular r) throws Exception {
+	public void editarRegular(Regular r) throws Exception {
 		if(r.ehAutomato()){
 			System.out.println("RegularDao > Soh eh possivel adicionar GRs ou ERs!");
 			return;
@@ -54,7 +54,7 @@ public class RegularDao extends Dao {
 		this.update(dados, where);
 	}
 	
-	public void setExtras(Regular r) throws Exception {
+	public void definirExtras(Regular r) throws Exception {
 		if(r.ehAutomato()){
 			System.out.println("RegularDao > Soh eh possivel adicionar GRs ou ERs!");
 			return;
@@ -77,28 +77,28 @@ public class RegularDao extends Dao {
 		}else if(r.isDumbGrEr())//intersecções não vão ser salvas no DB
 			return;
 		
-		HashMap<String, String> where = new HashMap<>();
-		where.put("titulo", r.titulo());
+		HashMap<String, String> onde = new HashMap<>();
+		onde.put("titulo", r.titulo());
 		
-		this.delete(where);
+		this.delete(onde);
 	}
 	
-	public ArrayList<Regular> getAll() throws Exception {
+	public ArrayList<Regular> obterTudo() throws Exception {
 		this.select("");
-		ResultSet result = this.getResultSet();
+		ResultSet resultado = this.getResultSet();
 		ArrayList<Regular> regResult = new ArrayList<>();
 		String tmpTitulo;
 		Regular tmpReg;
 		
-		while(result != null && result.next()){
-			tmpTitulo = result.getString("titulo");
+		while(resultado != null && resultado.next()){
+			tmpTitulo = resultado.getString("titulo");
 			if(tmpTitulo.contains("GR:")){
-				tmpReg = ControleGR.definirGramatica(tmpTitulo, result.getString("gr_er"));
-				tmpReg.extras(result.getString("extras"));
+				tmpReg = ControleGR.definirGramatica(tmpTitulo, resultado.getString("gr_er"));
+				tmpReg.extras(resultado.getString("extras"));
 				regResult.add(tmpReg);
 			}else{
-				tmpReg = ControleER.criarExpressaoRegular(tmpTitulo, result.getString("gr_er"));
-				tmpReg.extras(result.getString("extras"));
+				tmpReg = ControleER.criarExpressaoRegular(tmpTitulo, resultado.getString("gr_er"));
+				tmpReg.extras(resultado.getString("extras"));
 				regResult.add(tmpReg);
 			}
 		}

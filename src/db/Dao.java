@@ -8,26 +8,26 @@ import java.util.Set;
 
 public class Dao {
 	
-	private ResultSet resultSet = null;
+	private ResultSet conjuntoResultante = null;
 	protected PreparedStatement psmt = null;
-	protected Connection connection	= null;
+	protected Connection conexao	= null;
 	
 	protected final String tabela = "regular";
 	
 	public Dao(){
-		this.connection = BdConnection.getConnection();
+		this.conexao = ConexaoBancoDeDados.obterConexao();
 	}
 	
 	protected void query( String sql ) throws Exception {
-		this.psmt = this.connection.prepareStatement( sql );
+		this.psmt = this.conexao.prepareStatement( sql );
 	}
 
 	final protected void executar() throws Exception {
-		this.resultSet = this.psmt.executeQuery();
+		this.conjuntoResultante = this.psmt.executeQuery();
 	}
 
 	final protected ResultSet getResultSet() {
-		return this.resultSet;
+		return this.conjuntoResultante;
 	}
 	
 	protected void insert( HashMap<String, String> dados ) throws Exception {
