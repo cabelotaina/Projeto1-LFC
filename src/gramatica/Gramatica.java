@@ -8,105 +8,105 @@ public class Gramatica extends Regular {
 	
 	private ArrayList<String> Vn;
 	private ArrayList<Character> Vt;
-	private ArrayList<Producao> productions;
-	private String initialSimbol;
+	private ArrayList<Producao> producoes;
+	private String simboloInicial;
 
-	private String grammar; //representacao em String da gramatica
+	private String string_gramatica; //representacao em String da gramatica
 
 	public Gramatica(String titulo) {
 		this(new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), 
 				null, titulo, "");
 	}
 	
-	public Gramatica(String titulo, String grammar) {
+	public Gramatica(String titulo, String string_gramatica) {
 		this(new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), 
-				null, titulo, grammar);
+				null, titulo, string_gramatica);
 	}
 		
 	public Gramatica(ArrayList<String> vn, ArrayList<Character> vt,
-			ArrayList<Producao> productions, String initialSimbol, String titulo, String grammar) {
+			ArrayList<Producao> producoes, String simboloInicial, String titulo, String string_gramatica) {
 		super();
 		Vn = vn;
 		Vt = vt;
-		this.productions = productions;
-		this.initialSimbol = initialSimbol;
-		this.grammar = grammar;
+		this.producoes = producoes;
+		this.simboloInicial = simboloInicial;
+		this.string_gramatica = string_gramatica;
 		titulo(titulo);
 	}
 
 	/* Vn */
-	public ArrayList<String> getVn() {
+	public ArrayList<String> obterVn() {
 		return Vn;
 	}
 
-	public void setVn(ArrayList<String> vn) {
+	public void definirVn(ArrayList<String> vn) {
 		Vn = vn;
 	}
 	
-	public void addVn(String vn){
+	public void adicionarVn(String vn){
 		if(!this.Vn.contains(vn))
 			this.Vn.add(vn);
 	}
 	
 	/* Vt */
-	public ArrayList<Character> getVt() {
+	public ArrayList<Character> obterVt() {
 		return Vt;
 	}
 
-	public void setVt(ArrayList<Character> vt) {
+	public void definirVt(ArrayList<Character> vt) {
 		Vt = vt;
 	}
 	
-	public void addVt(char vt){
+	public void adicionarVt(char vt){
 		if(!this.Vt.contains(vt))
 			this.Vt.add(vt);
 	}
 
 	/* Productions */
-	public ArrayList<Producao> getProductions() {
-		return productions;
+	public ArrayList<Producao> obterProducoes() {
+		return producoes;
 	}
 	
-	public ArrayList<Producao> getProductions(String currentSimbol){
-		ArrayList<Producao> prods = new ArrayList<>();
-		for(Producao p : productions){
-			if(p.getCurrent().equals(currentSimbol))
-				prods.add(p);
+	public ArrayList<Producao> obterProducoes(String simboloAtual){
+		ArrayList<Producao> producoes = new ArrayList<>();
+		for(Producao p : this.producoes){
+			if(p.obterAtual().equals(simboloAtual))
+				producoes.add(p);
 		}
-		return prods;
+		return producoes;
 	}
 
-	public void setProductions(ArrayList<Producao> productions) {
-		this.productions = productions;
+	public void setProductions(ArrayList<Producao> producoes) {
+		this.producoes = producoes;
 	}
 	
-	public void addProduction(String current, char generated, String next){
-		Producao p = new Producao(current, generated, next);
-		if(!this.productions.contains(p))
-			this.productions.add(p);
+	public void adicionarProducao(String atual, char simbolo, String proximo){
+		Producao p = new Producao(atual, simbolo, proximo);
+		if(!this.producoes.contains(p))
+			this.producoes.add(p);
 	}
 	
-	public void addProduction(Producao p){
-		if(!this.productions.contains(p))
-			this.productions.add(p);
+	public void adicionarProducao(Producao producao){
+		if(!this.producoes.contains(producao))
+			this.producoes.add(producao);
 	}
 
-	/* Initial Simbol */
-	public String getInitialSimbol() {
-		return initialSimbol;
+	/* Simbolo Inicial */
+	public String obterSimboloInicial() {
+		return simboloInicial;
 	}
 
-	public void setInitialSimbol(String initialSimbol) {
-		this.initialSimbol = initialSimbol;
+	public void definirSimboloInicial(String simboloInicial) {
+		this.simboloInicial = simboloInicial;
 	}
 	
 	/* Grammar */
-	public String getGrammar() {
-		return grammar;
+	public String obterGramatica() {
+		return string_gramatica;
 	}
 	
-	public void setGrammar(String grammar){
-		this.grammar = grammar;
+	public void definirGramatica(String gramatica){
+		this.string_gramatica = gramatica;
 	}
 	
 	/* Regular */
@@ -117,11 +117,11 @@ public class Gramatica extends Regular {
 	
 	@Override
 	public boolean isDumbGrEr(){
-		return grammar.equals("");
+		return string_gramatica.equals("");
 	}
 	
 	@Override
 	public String toString() {
-		return grammar;
+		return string_gramatica;
 	}
 }

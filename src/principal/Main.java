@@ -163,7 +163,7 @@ public class Main {
 					" com este titulo, por favor escolha outro.");
 		
 		if(type == 0){
-			regular = ControleGR.createRegGrammar(titulo, reg);
+			regular = ControleGR.definirGramatica(titulo, reg);
 		}else if(type == 1){
 			regular = ControleER.criarExpressaoRegular(titulo, reg);
 		}
@@ -198,7 +198,7 @@ public class Main {
 		Regular regular = null;
 		
 		if(type == 0){
-			regular = ControleGR.createRegGrammar(titulo, reg);
+			regular = ControleGR.definirGramatica(titulo, reg);
 		}else if(type == 1){
 			regular = ControleER.criarExpressaoRegular(titulo, reg);
 		}

@@ -26,7 +26,7 @@ public class RegularDao extends Dao {
 		HashMap<String, String> dados = new HashMap<>();
 		dados.put("titulo", r.titulo());
 		if(r.ehGramatica())
-			dados.put("gr_er", ((Gramatica)r).getGrammar());
+			dados.put("gr_er", ((Gramatica)r).obterGramatica());
 		else
 			dados.put("gr_er", ((ExpressaoRegular)r).obterExpressaoRegular());
 		dados.put("extras", r.extras());
@@ -43,7 +43,7 @@ public class RegularDao extends Dao {
 		
 		HashMap<String, String> dados = new HashMap<>();
 		if(r.ehGramatica())
-			dados.put("gr_er", ((Gramatica)r).getGrammar());
+			dados.put("gr_er", ((Gramatica)r).obterGramatica());
 		else
 			dados.put("gr_er", ((ExpressaoRegular)r).obterExpressaoRegular());
 		dados.put("extras", r.extras());
@@ -93,7 +93,7 @@ public class RegularDao extends Dao {
 		while(result != null && result.next()){
 			tmpTitulo = result.getString("titulo");
 			if(tmpTitulo.contains("GR:")){
-				tmpReg = ControleGR.createRegGrammar(tmpTitulo, result.getString("gr_er"));
+				tmpReg = ControleGR.definirGramatica(tmpTitulo, result.getString("gr_er"));
 				tmpReg.extras(result.getString("extras"));
 				regResult.add(tmpReg);
 			}else{

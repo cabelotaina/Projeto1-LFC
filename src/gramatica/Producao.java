@@ -2,47 +2,47 @@ package gramatica;
 
 public class Producao {
 	
-	private String current;
-	private char generated;
-	private String next;
+	private String atual;
+	private char simbolo;
+	private String proximo;
 	
-	public Producao(String current, char generated, String next) {
-		this.current = current;
-		this.generated = generated;
-		this.next = next;
+	public Producao(String atual, char simbolo, String proximo) {
+		this.atual = atual;
+		this.simbolo = simbolo;
+		this.proximo = proximo;
 	}
 
-	/* Current NT Simbol */
-	public String getCurrent() {
-		return current;
+	/* Simbolo Atual */
+	public String obterAtual() {
+		return atual;
 	}
 	
-	public void setCurrent(String current) {
-		this.current = current;
+	public void definirAtual(String atual) {
+		this.atual = atual;
 	}
 	
-	/* Generated T Simbol */
-	public char getGenerated() {
-		return generated;
+	/* Simbolo */
+	public char obterSimbolo() {
+		return simbolo;
 	}
 	
-	public void setGenerated(char generated) {
-		this.generated = generated;
+	public void definirSimbolo(char simbolo) {
+		this.simbolo = simbolo;
 	}
 	
-	/* Next NT Simbol */
-	public String getNext() {
-		return next;
+	/* Proximo Simbolo */
+	public String obterProximo() {
+		return proximo;
 	}
 	
-	public void setNext(String next) {
-		this.next = next;
+	public void definirProximo(String proximo) {
+		this.proximo = proximo;
 	}
 
 	@Override
 	public String toString() {
-		return "Production [current=" + current + ", generated=" + generated
-				+ ", next=" + next + "]";
+		return "Production [current=" + atual + ", generated=" + simbolo
+				+ ", next=" + proximo + "]";
 	}
 
 	@Override
@@ -51,10 +51,10 @@ public class Producao {
 			return true;
 		if (obj == null || getClass() != obj.getClass())
 			return false;
-		Producao other = (Producao) obj;
-		if( this.current.equals(other.getCurrent()) && 
-				this.generated == other.getGenerated() &&
-				this.next.equals(other.getNext()) )
+		Producao outro = (Producao) obj;
+		if( this.atual.equals(outro.obterAtual()) && 
+				this.simbolo == outro.obterSimbolo() &&
+				this.proximo.equals(outro.obterProximo()) )
 			return true;
 		
 		return false;

@@ -36,7 +36,7 @@ public class Transicoes {
 	}
 	
 	// Transition
-	public void addTransition(Estado current, char trigger, Estado next){
+	public void adicionarTransicao(Estado current, char trigger, Estado next){
 		if(!transicoes.containsKey(current))
 			transicoes.put(current, new HashMap<>());
 		if(!transicoes.get(current).containsKey(trigger))

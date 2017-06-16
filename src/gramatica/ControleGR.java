@@ -8,90 +8,88 @@ import automato.Estado;
 
 public abstract class ControleGR {
 	
-	public static final String allowedSimbols = 
+	public static final String simbolosPermitidos = 
 			"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789&";
-	public static final String allowedExtraSimbols =
+	public static final String simbolosExtrasPermitidos =
 			"->|";
-	private static final String pattern =
+	private static final String padrao =
 			"([A-Z][0-9]?->(([a-z0-9]([A-Z][0-9]?)|[a-z0-9&])(\\|))*([a-z0-9]([A-Z][0-9]?)(?![0-9]?->)|[a-z0-9&]))";
 	
-	public static Gramatica createRegGrammar(String titulo, String grammar){
-		grammar = grammar.replaceAll("\\s*", "");
+	public static Gramatica definirGramatica(String titulo, String string_gramatica){
+		string_gramatica = string_gramatica.replaceAll("\\s*", "");
 		
-		if(!isValidRegGrammar(grammar))
+		if(!ehUmagramatica(string_gramatica))
 			return null;
+				
+		Gramatica gramatica = new Gramatica(titulo);
+		Pattern p = Pattern.compile(padrao);
+		Matcher matcher = p.matcher(string_gramatica);
 		
-		//String newLine = System.getProperty("line.separator");
-		
-		Gramatica G = new Gramatica(titulo);
-		Pattern p = Pattern.compile(pattern);
-		Matcher matcher = p.matcher(grammar);
-		
-		grammar = "";
+		string_gramatica = "";
 		
 		String linha, vn, tmpVt, tmpVn;
-		String[] split;
+		String[] formas_sentenciais;
 		while(matcher.find()){
 			linha = matcher.group();
-			grammar += linha+"\n";
+			string_gramatica += linha+"\n";
 			
-			split = linha.split("->");
-			vn = split[0]; 
-			G.addVn(vn);
-			if(G.getInitialSimbol() == null)
-				G.setInitialSimbol(vn);
+			formas_sentenciais = linha.split("->");
+			vn = formas_sentenciais[0]; 
+			gramatica.adicionarVn(vn);
+			if(gramatica.obterSimboloInicial() == null)
+				gramatica.definirSimboloInicial(vn);
 			
-			split = split[1].split("\\|");
-			for(String elements : split){
-				if(elements.length() > 0){
-					tmpVt = elements.substring(0, 1);
-					if(elements.length() > 1)
-						tmpVn = elements.substring(1, elements.length());
+			formas_sentenciais = formas_sentenciais[1].split("\\|");
+			for(String forma_sentencial : formas_sentenciais){
+				if(forma_sentencial.length() > 0){
+					tmpVt = forma_sentencial.substring(0, 1);
+					if(forma_sentencial.length() > 1)
+						tmpVn = forma_sentencial.substring(1, forma_sentencial.length());
 					else
 						tmpVn = "$";
 					
-					G.addVt(tmpVt.charAt(0));
-					G.addProduction(vn, tmpVt.charAt(0), tmpVn);
+					gramatica.adicionarVt(tmpVt.charAt(0));
+					gramatica.adicionarProducao(vn, tmpVt.charAt(0), tmpVn);
 				}
 			}
 		}
-		G.setGrammar(grammar);
+		gramatica.definirGramatica(string_gramatica);
 		
-		return G;
+		return gramatica;
 	}
 	
-	private static boolean isValidRegGrammar(String grammar){
-		//return grammar.matches("([A-Z][0-9]?->(([a-z0-9][A-Z]?(?!->)|[a-z0-9&])(\\|)?)+)+");
-		return grammar.matches(pattern+"+");
+	// Teste para saber se a gramatica é válida
+	private static boolean ehUmagramatica(String gramatica){
+		return gramatica.matches(padrao+"+");
 	}
 	
-	public static Automato criarAutomato(Gramatica grammar){
+	public static Automato criarAutomato(Gramatica gramatica){
 		
-		Automato af = new Automato(grammar.getVt());
-		af.titulo(grammar.titulo());
-		grammar.extra("AF");
+		Automato af = new Automato(gramatica.obterVt());
+		af.titulo(gramatica.titulo());
+		gramatica.extra("AF");
 		
-		Estado sFinal = new Estado("FINAL");
-		af.adicionarEstado(sFinal);
-		af.estadoFinal(sFinal);
+		Estado estado_final = new Estado("FINAL");
+		af.adicionarEstado(estado_final);
+		af.estadoFinal(estado_final);
 
-		for(String vn : grammar.getVn()){
+		for(String vn : gramatica.obterVn()){
 			Estado s = new Estado(vn);
 			af.adicionarEstado(s);
-			if(vn.equals(grammar.getInitialSimbol()))
+			if(vn.equals(gramatica.obterSimboloInicial()))
 				af.estadoInicial(s);
 			
-			for(Producao p : grammar.getProductions(vn)){
-				if(p.getNext().equals("$"))
-					af.adicionarTransicao(s, p.getGenerated(), sFinal);
+			for(Producao p : gramatica.obterProducoes(vn)){
+				if(p.obterProximo().equals("$"))
+					af.adicionarTransicao(s, p.obterSimbolo(), estado_final);
 				else
-					af.adicionarTransicao(s, p.getGenerated(), new Estado(p.getNext()));
+					af.adicionarTransicao(s, p.obterSimbolo(), new Estado(p.obterProximo()));
 				
-				if(vn.equals(grammar.getInitialSimbol()) && p.getGenerated() == '&')
+				if(vn.equals(gramatica.obterSimboloInicial()) && p.obterSimbolo() == '&')
 					af.estadoFinal(s);
 			}
 		}
-		af.sortStates();
+		af.ordenarEstados();
 		af.ordernarAlfabeto();
 		
 		return af;

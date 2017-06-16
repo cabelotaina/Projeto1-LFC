@@ -12,7 +12,8 @@ import principal.Regular;
 /**
  * Classe modelo que representa um Automato Finito.
  * 
- * @author Gilney
+ * @author Maurilio Atila
+ * @author Wilian Kraemmer
  *
  */
 public class Automato extends Regular {
@@ -160,18 +161,18 @@ public class Automato extends Regular {
 	 * Ordena os estados do AF deixando os estados com
 	 * nome == "FINAL" ou "ERRO" por ultimo.
 	 */
-	public void sortStates(){
+	public void ordenarEstados(){
 		Collections.sort(estados, new Comparator<Estado>(){
-			public boolean isLast(Estado estado){
+			public boolean ehOUltimo(Estado estado){
 				return estado.nome().contains("FINAL") ||
 						estado.nome().contains("ERRO"); 
 			}
 			
 			@Override
 			public int compare(Estado s1, Estado s2) {
-				if(isLast(s1) && !isLast(s2))
+				if(ehOUltimo(s1) && !ehOUltimo(s2))
 					return 1;
-				else if(!isLast(s1) && isLast(s2))
+				else if(!ehOUltimo(s1) && ehOUltimo(s2))
 					return -1;
 				else 
 					return 0;
@@ -179,12 +180,12 @@ public class Automato extends Regular {
 		});
 	}
 	
-	// Alphabet
+	// Alfabeto
 	public ArrayList<Character> alfabeto() {
 		return alfabeto;
 	}
 
-	public void setAlphabet(ArrayList<Character> alfabeto) {
+	public void definirAlfabeto(ArrayList<Character> alfabeto) {
 		this.alfabeto = alfabeto;
 	}
 	
@@ -236,7 +237,7 @@ public class Automato extends Regular {
 		return transicoes;
 	}
 
-	public void setTransitions(Transicoes transicoes) {
+	public void definirTransicoes(Transicoes transicoes) {
 		this.transicoes = transicoes;
 	}
 	
@@ -254,7 +255,7 @@ public class Automato extends Regular {
 				!alfabeto.contains(disparador))
 			return;
 		
-		transicoes.addTransition(corrente, disparador, alvo);
+		transicoes.adicionarTransicao(corrente, disparador, alvo);
 	}
 	
 	/**
