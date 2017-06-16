@@ -28,7 +28,7 @@ import principal.WarningException;
  * 
  */
 @SuppressWarnings("serial")
-public class newGrEr extends JDialog implements ActionListener {
+public class NovoAFDouER extends JDialog implements ActionListener {
 	
 	private Main main;
 	private int type;
@@ -46,7 +46,7 @@ public class newGrEr extends JDialog implements ActionListener {
 	/**
 	 * Create the application.
 	 */
-	public newGrEr(JFrame parent, Main main, int type, int side, 
+	public NovoAFDouER(JFrame parent, Main main, int type, int side, 
 			String titulo, String reg) {
 		super(parent, true);
 		this.main = main;
@@ -103,8 +103,8 @@ public class newGrEr extends JDialog implements ActionListener {
 		getContentPane().add(panel_1, BorderLayout.CENTER);
 		panel_1.setLayout(new BorderLayout(0, 0));
 		
-		JLabel label2 = new JLabel("Entre com sua "+ (type==0?"G.R":"E.R") +":");
-		label2.setFont(new Font("Tahoma", Font.BOLD, 12));
+		JLabel label2 = new JLabel("Entre com "+ (type==0?"seu AFD":"sua E.R") +":");
+		label2.setFont(new Font("Arial", Font.BOLD, 12));
 		panel_1.add(label2, BorderLayout.NORTH);
 		
 		JScrollPane scrollPane = new JScrollPane();

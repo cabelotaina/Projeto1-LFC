@@ -169,22 +169,22 @@ public class UserInterface {
 		JMenu mnNovo = new JMenu("Novo");
 		menuBar.add(mnNovo);
 
-		JMenuItem itemGr = new JMenuItem("G.R");
+		JMenuItem itemGr = new JMenuItem("Automato");
 		itemGr.addActionListener(mListener);
 		mnNovo.add(itemGr);
 
-		JMenuItem itemEr = new JMenuItem("E.R");
+		JMenuItem itemEr = new JMenuItem("Express\u00E3o Regular");
 		itemEr.addActionListener(mListener);
 		mnNovo.add(itemEr);
 
 		JMenu mnOpUnaria = new JMenu("Op. Un\u00E1ria");
 		menuBar.add(mnOpUnaria);
 
-		JMenuItem itemDeterminacao = new JMenuItem("Determina\u00E7\u00E3o");
+		JMenuItem itemDeterminacao = new JMenuItem("Determiniza\u00E7\u00E3o");
 		itemDeterminacao.addActionListener(mListener);
 		mnOpUnaria.add(itemDeterminacao);
 
-		JMenuItem itemMinimacao = new JMenuItem("Minima\u00E7\u00E3o");
+		JMenuItem itemMinimacao = new JMenuItem("Minimiza\u00E7\u00E3o");
 		itemMinimacao.addActionListener(mListener);
 		mnOpUnaria.add(itemMinimacao);
 
@@ -194,10 +194,6 @@ public class UserInterface {
 
 		JSeparator separator = new JSeparator();
 		mnOpUnaria.add(separator);
-
-		JMenuItem itemBusca = new JMenuItem("Busca");
-		itemBusca.addActionListener(mListener);
-		mnOpUnaria.add(itemBusca);
 
 		JMenu mnOpBinaria = new JMenu("Op. Bin\u00E1ria");
 		menuBar.add(mnOpBinaria);
@@ -371,28 +367,20 @@ public class UserInterface {
 
 			try {
 				switch (cmd) {
-				case "G.R":
-					new newGrEr(frame, main, 0, side, null, null);
+				case "Automato":
+					new NovoAFDouER(frame, main, 0, side, null, null);
 					break;
-				case "E.R":
-					new newGrEr(frame, main, 1, side, null, null);
+				case "Express\u00E3o Regular":
+					new NovoAFDouER(frame, main, 1, side, null, null);
 					break;
-				case "Determina\u00E7\u00E3o":
+				case "Determiniza\u00E7\u00E3o":
 					main.determinize(side);
 					break;
-				case "Minima\u00E7\u00E3o":
+				case "Minimiza\u00E7\u00E3o":
 					main.minimize(side);
 					break;
 				case "Complemento":
 					main.complement(side);
-					break;
-				case "Busca":
-					if (main.isRegExpression(side)) {
-						String txt = JOptionPane.showInputDialog(frame, "Entre com o texto para busca:");
-						new SearchResults(frame, txt, main.search(side, txt));
-					} else
-						JOptionPane.showMessageDialog(frame,
-								"Esta opera\u00E7\u00E3o n\u00E3o esta disponivel para GRs.");
 					break;
 				case "Intersec\u00E7\u00E3o":
 					main.intersection();
@@ -440,7 +428,7 @@ public class UserInterface {
 				case "Edit":
 					Regular reg = main.getRegular(side, "GR/ER");
 					int type = reg.ehGramatica() ? 0 : 1;
-					new newGrEr(frame, main, type, side, reg.titulo(), reg.toString());
+					new NovoAFDouER(frame, main, type, side, reg.titulo(), reg.toString());
 					break;
 				case "Del":
 					int op = JOptionPane.showConfirmDialog(frame, "Voce tem certeza que deseja deletar esta GR/ER?");

@@ -1,4 +1,4 @@
-package db;
+package banco_de_dados;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
