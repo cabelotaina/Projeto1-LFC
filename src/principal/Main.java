@@ -17,7 +17,9 @@ import gui.UserInterface;
 /**
  * Classe responsavel pelo controle de dados do programa.
  * 
- * @author Gilney
+ * @author Maurilio Atila
+ * @author Wilian Kraemmer
+ * 
  */
 public class Main {
 
@@ -43,11 +45,11 @@ public class Main {
 	 */
 	
 	public static void main(String[] args) {
-		Automato automato = DeSimone.criarAutomato("(a.a)*");
-		System.out.println(automato.estados());
-		System.out.println(automato.titulo());
+//		Automato automato = DeSimone.criarAutomato("(a.a)*");
+//		System.out.println(automato.estados());
+//		System.out.println(automato.titulo());
 		
-		//new Main();
+		new Main();
 	}
 	
 	public Main(){

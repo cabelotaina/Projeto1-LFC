@@ -3,7 +3,8 @@ package principal;
 /**
  * Classe usada como base para as Grs/Ers/Afs.
  * 
- * @author Gilney
+ * @author Maurilio Atila
+ * @author Wilian Kraemmer
  *
  */
 public abstract class Regular {

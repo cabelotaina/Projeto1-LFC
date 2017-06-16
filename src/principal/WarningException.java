@@ -5,8 +5,10 @@ package principal;
  * passar informações do controle para a interface
  * que cuida de adicionar/editar as Grs/Ers
  * 
- * @author Gilney
- *
+ * @author Maurilio Atila
+ * @author Wilian Kraemmer
+ * 
+ * 
  */
 @SuppressWarnings("serial")
 public class WarningException extends Exception {

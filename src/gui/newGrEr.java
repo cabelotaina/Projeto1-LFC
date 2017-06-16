@@ -23,8 +23,9 @@ import principal.WarningException;
 /**
  * Interface para adicionar e editar GRs e ERs.
  * 
- * @author Gilney
- *
+ * @author Maurilio Atila
+ * @author Wilian Kraemmer
+ * 
  */
 @SuppressWarnings("serial")
 public class newGrEr extends JDialog implements ActionListener {

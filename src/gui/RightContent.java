@@ -23,8 +23,10 @@ import principal.Regular;
  * O conteudo deste painel muda conforme o 
  * 'Conjunto' Regular que ele possua. 
  * 
- * @author Gilney
- *
+ * @author Maurilio Atila
+ * @author Wilian Kraemmer
+ * 
+ * 
  */
 @SuppressWarnings("serial")
 public class RightContent extends JPanel {

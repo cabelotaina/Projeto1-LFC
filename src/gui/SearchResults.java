@@ -18,7 +18,8 @@ import javax.swing.JTextArea;
  * Interface para mostrar os resultados da
  * busca em texto feita pelo programa.
  * 
- * @author Gilney
+ * @author Maurilio Atila
+ * @author Wilian Kraemmer
  *
  */
 @SuppressWarnings("serial")

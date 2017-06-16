@@ -11,7 +11,9 @@ import javax.swing.JFrame;
  * Interface usada para mostrar o AF da intersecção
  * de dois outros AFs.
  * 
- * @author Gilney
+ * @author Maurilio Atila
+ * @author Wilian Kraemmer
+ * 
  *
  */
 @SuppressWarnings("serial")

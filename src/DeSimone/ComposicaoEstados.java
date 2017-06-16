@@ -8,7 +8,8 @@ import automato.Estado;
  * Classe usada pelo codigo De Simone. Contem
  * o estado e os nodos que o constituem.
  * 
- * @author Gilney
+ * @author Maurilio Atila
+ * @author Wilian Kraemmer
  *
  */
 public class ComposicaoEstados {
