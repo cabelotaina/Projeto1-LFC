@@ -1,4 +1,4 @@
-package desimone;
+package DeSimone;
 
 import java.util.ArrayList;
 import java.util.Stack;
@@ -29,10 +29,10 @@ public class Arvore {
 
 	private No createSubTrees(No n, String regEx) {
 		No newNodo = new No();
-		SubArvore sub = SubArvore.getInstance();
+		SubArvore sub = SubArvore.obterInstancia();
 		
 		regEx = removeExternalParentheses(regEx);
-		int raiz = sub.positionOfRoot(regEx);
+		int raiz = sub.posicaoDaRaiz(regEx);
 		
 		if(raiz == -1 && regEx.length() > 1)
 			return createSubTrees(n, regEx);

@@ -8,8 +8,8 @@ import java.util.Set;
 import expressao_regular.ExpressaoRegular;
 import expressao_regular.ControleER;
 import gramatica.Gramatica;
-import gramatica.ControleGR;
 import principal.Regular;
+import gramatica.ControleGR;
 
 public class ControleAF {
 	

@@ -1,4 +1,4 @@
-package desimone;
+package DeSimone;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -113,7 +113,7 @@ public abstract class DeSimone {
 	private static ArrayList<No> getComposition(ComposicaoEstados sTmp, Arvore tree) {
 		
 		ArrayList<No> result = new ArrayList<>();
-		ArrayList<NoAtravesado> traversed;
+		ArrayList<NoAtravessado> traversed;
 		for(No n : sTmp.getComposition()){
 			traversed  = new ArrayList<>();
 			if(n.getC() != '$')
@@ -137,13 +137,13 @@ public abstract class DeSimone {
 	 * @param tree		Arvore base.
 	 */
 	private static void searchTree(No n, boolean dir, ArrayList<No> result, 
-			ArrayList<NoAtravesado> traversed, Arvore tree) {
+			ArrayList<NoAtravessado> traversed, Arvore tree) {
 		
 		if(n == null || result.contains(n))
 			return;
 		
 		// Verificação se o nodo ja foi percorrido nessa direção.
-		NoAtravesado nt = new NoAtravesado(n, dir);
+		NoAtravessado nt = new NoAtravessado(n, dir);
 		if(traversed.contains(nt))
 			return;
 		else

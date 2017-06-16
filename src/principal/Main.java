@@ -6,7 +6,7 @@ import java.util.HashMap;
 import automato.Automato;
 import automato.ControleAF;
 import db.RegularDao;
-import desimone.DeSimone;
+import DeSimone.DeSimone;
 import expressao_regular.ControleER;
 import gramatica.Gramatica;
 import gramatica.ControleGR;
