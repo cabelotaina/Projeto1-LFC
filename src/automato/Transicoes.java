@@ -6,10 +6,10 @@ import java.util.HashMap;
 public class Transicoes {
 	
 	private HashMap<Estado, HashMap<Character, ArrayList<Estado>>> 
-		transitions;
+		transicoes;
 	
 	public Transicoes(){
-		this.transitions = new HashMap<>();
+		this.transicoes = new HashMap<>();
 	}
 	
 	/**
@@ -19,30 +19,30 @@ public class Transicoes {
 	 * @param t		Transitions que se quer copiar.
 	 */
 	public Transicoes(Transicoes t){
-		this.transitions = new HashMap<>();
+		this.transicoes = new HashMap<>();
 		HashMap<Estado, HashMap<Character, ArrayList<Estado>>>
 			tmp = t.getTransitions();
 		
 		for(Estado s : tmp.keySet()){
-			transitions.put(new Estado(s), new HashMap<>());
+			this.transicoes.put(new Estado(s), new HashMap<>());
 			for(char c : tmp.get(s).keySet())
-				transitions.get(s).put(c, new ArrayList<>(tmp.get(s).get(c)));
+				this.transicoes.get(s).put(c, new ArrayList<>(tmp.get(s).get(c)));
 		}
 	}
 	
 	public Transicoes(
 			HashMap<Estado, HashMap<Character, ArrayList<Estado>>> transitions) {
-		this.transitions = transitions;
+		this.transicoes = transitions;
 	}
 	
 	// Transition
 	public void addTransition(Estado current, char trigger, Estado next){
-		if(!transitions.containsKey(current))
-			transitions.put(current, new HashMap<>());
-		if(!transitions.get(current).containsKey(trigger))
-			transitions.get(current).put(trigger, new ArrayList<>());
+		if(!transicoes.containsKey(current))
+			transicoes.put(current, new HashMap<>());
+		if(!transicoes.get(current).containsKey(trigger))
+			transicoes.get(current).put(trigger, new ArrayList<>());
 		
-		transitions.get(current).get(trigger).add(next);
+		transicoes.get(current).get(trigger).add(next);
 	}
 	
 	public void adicionarTransicoes(Transicoes t){
@@ -50,31 +50,31 @@ public class Transicoes {
 			tmp = t.getTransitions();
 		
 		for(Estado s : tmp.keySet()){
-			transitions.put(new Estado(s), new HashMap<>());
+			transicoes.put(new Estado(s), new HashMap<>());
 			for(char c : tmp.get(s).keySet())
-				transitions.get(s).put(c, new ArrayList<>(tmp.get(s).get(c)));
+				transicoes.get(s).put(c, new ArrayList<>(tmp.get(s).get(c)));
 		}
 	}
 	
 	public ArrayList<Estado> obterProximosEstados(Estado current, char trigger){
-		if(!transitions.containsKey(current) || 
-				!transitions.get(current).containsKey(trigger))
+		if(!transicoes.containsKey(current) || 
+				!transicoes.get(current).containsKey(trigger))
 			return new ArrayList<>();
-		return transitions.get(current).get(trigger);
+		return transicoes.get(current).get(trigger);
 	}
 	
 	public void removerTransicaoPorSimbolo(char simbol){
-		for(Estado key : transitions.keySet()){
-			if(transitions.get(key).containsKey(simbol))
-				transitions.get(key).remove(simbol);
+		for(Estado key : transicoes.keySet()){
+			if(transicoes.get(key).containsKey(simbol))
+				transicoes.get(key).remove(simbol);
 		}
 	}
 	
 	public void removerTransicaoPorEstado(Estado s){
-		transitions.remove(s);
-		for(Estado s2 : transitions.keySet())
-			for(char c : transitions.get(s2).keySet())
-				transitions.get(s2).get(c).remove(s);
+		transicoes.remove(s);
+		for(Estado s2 : transicoes.keySet())
+			for(char c : transicoes.get(s2).keySet())
+				transicoes.get(s2).get(c).remove(s);
 	}
 	
 	/**
@@ -88,20 +88,20 @@ public class Transicoes {
 	 * 					cheguem nele.
 	 */
 	public void transicaoParaProximoEstado(Estado sOld, Estado sNew){
-		for(Estado key : transitions.keySet()){
-			for(char c : transitions.get(key).keySet()){
-				if(transitions.get(key).get(c).remove(sOld))
-					transitions.get(key).get(c).add(sNew);
+		for(Estado key : transicoes.keySet()){
+			for(char c : transicoes.get(key).keySet()){
+				if(transicoes.get(key).get(c).remove(sOld))
+					transicoes.get(key).get(c).add(sNew);
 			}
 		}
 	}
 	
 	public HashMap<Estado, HashMap<Character, ArrayList<Estado>>> getTransitions(){
-		return this.transitions;
+		return this.transicoes;
 	}
 
 	@Override
 	public String toString() {
-		return "Transitions [transitions=" + transitions + "]";
+		return "Transitions [transitions=" + transicoes + "]";
 	}
 }

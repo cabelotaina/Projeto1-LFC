@@ -101,7 +101,7 @@ public class Automato extends Regular {
 	 */
 	public Estado getState(String nome){
 		for(Estado estado : estados){
-			if(estado.getName().equals(nome))
+			if(estado.nome().equals(nome))
 				return estado;
 		}
 		return null;
@@ -163,8 +163,8 @@ public class Automato extends Regular {
 	public void sortStates(){
 		Collections.sort(estados, new Comparator<Estado>(){
 			public boolean isLast(Estado estado){
-				return estado.getName().contains("FINAL") ||
-						estado.getName().contains("ERRO"); 
+				return estado.nome().contains("FINAL") ||
+						estado.nome().contains("ERRO"); 
 			}
 			
 			@Override

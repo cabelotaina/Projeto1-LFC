@@ -17,8 +17,8 @@ public class ControleAF {
 	 * Cria um AF usando uma GR ou ER como base.
 	 * 
 	 * @param regular		'Conjunto' Regular [Gr ou Er] usada como
-	 * 					base para fazer o AF.
-	 * @return			AF criado.
+	 * 					     base para fazer o AF.
+	 * @return			     AF criado.
 	 */
 	public static Automato criarAutomato(Regular regular) {
 		if(regular.ehGramatica())
@@ -33,7 +33,7 @@ public class ControleAF {
 	 * Determiniza o AF dado.
 	 * 
 	 * @param automato		AF a determinizar.
-	 * @return			AF Determinizado equivalente ao AF dado.
+	 * @return			    AF Determinizado equivalente ao AF dado.
 	 */
 	public static Automato determinizacao(Automato automato) {
 		if(automato.extras().contains("AFD"))
@@ -63,7 +63,7 @@ public class ControleAF {
 	 * 						e seus &-fechos como values.
 	 * @param estados		&-fecho do estado alvo atual da 
 	 * 						determinizacao.
-	 * @param primeira			Eh a primeira execucao da funcao recursiva?
+	 * @param primeira	    Eh a primeira execucao da funcao recursiva?
 	 */
 	private static void recDeterminize(Automato automato, Automato automato_fd,
 			HashMap<Estado, Set<Estado>> fechos, Set<Estado> estados, boolean primeira) {
@@ -106,9 +106,9 @@ public class ControleAF {
 	 * e retorna seu complemento.
 	 * 
 	 * @param estado		AF base para a operacao de complemento.
-	 * @return			AFD Complementado equivalente ao AF dado.
+	 * @return			    AFD Complementado equivalente ao AF dado.
 	 */
-	public static Automato complement(Automato estado){
+	public static Automato complemento(Automato estado){
 		
 		Automato comp;
 		if(!estado.extras().contains("AFD"))
@@ -129,7 +129,7 @@ public class ControleAF {
 	 * e completa, tambem caso necessario, o AF dado.
 	 * 
 	 * @param automato_fd		AF base para ser completado.
-	 * @return			AFD Completo equivalente ao AF dado.
+	 * @return			        AFD Completo equivalente ao AF dado.
 	 */
 	private static Automato completar(Automato automato_fd){
 		/*if(afd.getExtras().contains("Complete"))
@@ -212,14 +212,14 @@ public class ControleAF {
 		
 		for(int i = 0; i<conjuntosDeEquivalencia.size(); i++){
 			conjunto = conjuntosDeEquivalencia.get(i);
-			if(!conjunto.get(0).getName().contains("[ERRO]")){
+			if(!conjunto.get(0).nome().contains("[ERRO]")){
 				estadosTmp = new Estado("Q"+i);
 				estados.put(estadosTmp, conjunto);
 			}
 		}
 		
 		int nSet;
-		Estado tmpState2;
+		Estado tmpEstado2;
 		for(Estado s : estados.keySet()){
 			minimo.adicionarEstado(s);
 			for(Estado s2 : estados.get(s)){
@@ -233,11 +233,11 @@ public class ControleAF {
 		for(Estado s : estados.keySet()){
 			estadosTmp = estados.get(s).get(0);
 			for(char c : minimo.alfabeto()){
-				nSet = getWhichEqSetIsIn(conjuntosDeEquivalencia, afd.obterProximosEstados(estadosTmp, c).get(0));
+				nSet = numeroConjuntoEquivalencia(conjuntosDeEquivalencia, afd.obterProximosEstados(estadosTmp, c).get(0));
 				if(nSet != -1){
-					tmpState2 = minimo.getState("Q"+nSet);
-					if(tmpState2 != null)
-						minimo.adicionarTransicao(s, c, tmpState2);
+					tmpEstado2 = minimo.getState("Q"+nSet);
+					if(tmpEstado2 != null)
+						minimo.adicionarTransicao(s, c, tmpEstado2);
 				}
 			}
 		}
@@ -251,7 +251,7 @@ public class ControleAF {
 	 * Funcao recursiva interna que calcula os 'Conjuntos de equivalencia'
 	 * intermediarios para a construcao do AFD Minimo.
 	 * 
-	 * @param minimo		 			AFD Minimo intermediario.
+	 * @param minimo		 			 AFD Minimo intermediario.
 	 * @param conjuntosEquivalencia		'Conjuntos de equivalencia' intermediarios.
 	 * @return							'Conjuntos de equivalencia' final.
 	 */
@@ -260,21 +260,21 @@ public class ControleAF {
 		
 		ArrayList<ArrayList<Estado>> novoConjunto = new ArrayList<>();
 		ArrayList<Estado> tmp;
-		boolean toAdd;
+		boolean paraAdicionar;
 		
 		for(ArrayList<Estado> conjunto : conjuntosEquivalencia){
 			for(int i = 0; i < conjunto.size(); i++){
-				if(getWhichEqSetIsIn(novoConjunto, conjunto.get(i)) == -1){
+				if(numeroConjuntoEquivalencia(novoConjunto, conjunto.get(i)) == -1){
 					tmp = new ArrayList<>();
 					tmp.add(conjunto.get(i));
 					for(int k = i+1; k < conjunto.size(); k++){
-						toAdd = true;
+						paraAdicionar = true;
 						for(char c : minimo.alfabeto()){
-							if(getWhichEqSetIsIn(conjuntosEquivalencia, minimo.obterProximosEstados(conjunto.get(i), c).get(0)) !=
-									getWhichEqSetIsIn(conjuntosEquivalencia, minimo.obterProximosEstados(conjunto.get(k), c).get(0)))
-								toAdd = false;
+							if(numeroConjuntoEquivalencia(conjuntosEquivalencia, minimo.obterProximosEstados(conjunto.get(i), c).get(0)) !=
+									numeroConjuntoEquivalencia(conjuntosEquivalencia, minimo.obterProximosEstados(conjunto.get(k), c).get(0)))
+								paraAdicionar = false;
 						}
-						if(toAdd)
+						if(paraAdicionar)
 							tmp.add(conjunto.get(k));
 					}
 					novoConjunto.add(tmp);
@@ -289,14 +289,13 @@ public class ControleAF {
 	}
 
 	/**
-	 * Retorna o numero do 'Conjunto de equivalencia' que 
-	 * contem o estado dado.
+	 * Retorna o numero do 'Conjunto de equivalencia' que contem o estado dado.
 	 * 
 	 * @param conjuntoEsquivalencia		'Conjunto de equivalencia' a ser checado.
-	 * @param estado			Estado que se quer saber a qual conjunto pertence.
+	 * @param estado			         Estado que se quer saber a qual conjunto pertence.
 	 * @return
 	 */
-	private static int getWhichEqSetIsIn(ArrayList<ArrayList<Estado>> conjuntoEsquivalencia,
+	private static int numeroConjuntoEquivalencia(ArrayList<ArrayList<Estado>> conjuntoEsquivalencia,
 			Estado estado) {
 		
 		for(int i = 0; i<conjuntoEsquivalencia.size(); i++)
@@ -320,15 +319,15 @@ public class ControleAF {
 			afd = determinizacao(afd);
 		
 		Set<Estado> estadosAcessiveis = new HashSet<>();
-		Set<Estado> toAdd;
+		Set<Estado> paraAdicionar;
 		
 		estadosAcessiveis.add(afd.estadoInicial());
 		
 		do{
-			toAdd = new HashSet<>();
+			paraAdicionar = new HashSet<>();
 			for(Estado s : estadosAcessiveis)
-				toAdd.addAll(afd.obterTodosOsProximosEstados(s));
-		}while(estadosAcessiveis.addAll(toAdd));
+				paraAdicionar.addAll(afd.obterTodosOsProximosEstados(s));
+		}while(estadosAcessiveis.addAll(paraAdicionar));
 		
 		return estadosAcessiveis;
 	}
@@ -344,33 +343,33 @@ public class ControleAF {
 		if(!afd.extras().contains("AFD"))
 			afd = determinizacao(afd);
 		
-		Set<Estado> fertileStates = new HashSet<>();
-		Set<Estado> toAdd;
+		Set<Estado> estadosFerteis = new HashSet<>();
+		Set<Estado> paraAdicionar;
 		
-		fertileStates.addAll(afd.estadosFinais());
+		estadosFerteis.addAll(afd.estadosFinais());
 		
 		do{
-			toAdd = new HashSet<>();
-			for(Estado s : fertileStates)
-				toAdd.addAll(afd.obterTodosOsEstadosAnteriores(s));
-		}while(fertileStates.addAll(toAdd));
+			paraAdicionar = new HashSet<>();
+			for(Estado s : estadosFerteis)
+				paraAdicionar.addAll(afd.obterTodosOsEstadosAnteriores(s));
+		}while(estadosFerteis.addAll(paraAdicionar));
 		
-		return fertileStates;
+		return estadosFerteis;
 	}
 	
 	/**
 	 * Cria um AFD que reconhece a linguagem vazia.
 	 * 
-	 * @param alphabet		Alfabeto base para o AFD Vazio.
+	 * @param alfabeto		Alfabeto base para o AFD Vazio.
 	 * @return				AFD que aceita soh a linguagem vazia.
 	 */
-	private static Automato criarAutomatoVazio(ArrayList<Character> alphabet){
-		Automato empty = new Automato(alphabet);
-		Estado s = new Estado("S");
-		empty.adicionarEstado(s);
-		empty.estadoInicial(s);
-		empty.extras("AFD|AFD_Min|Empty");
-		return empty;
+	private static Automato criarAutomatoVazio(ArrayList<Character> alfabeto){
+		Automato vazio = new Automato(alfabeto);
+		Estado estado = new Estado("S");
+		vazio.adicionarEstado(estado);
+		vazio.estadoInicial(estado);
+		vazio.extras("AFD|AFD_Min|Vazio");
+		return vazio;
 	}
 	
 	/**
@@ -380,42 +379,42 @@ public class ControleAF {
 	 * 
 	 * @param txt				Texto que se quer fazer a busca de padrão.
 	 * @param af				AF que sera utilizado.
-	 * @param determinized		AF ja esta determinizado?
+	 * @param determinizado		AF ja esta determinizado?
 	 * @return					Lista com todas as palavras achadas no texto
 	 * 							usando o AFD dado.
 	 */
-	public static ArrayList<String> search(String txt, Automato af, boolean determinized){
-		if(!determinized)
+	public static ArrayList<String> search(String txt, Automato af, boolean determinizado){
+		if(!determinizado)
 			af = determinizacao(new Automato(af));
 			
 		ArrayList<String> result = new ArrayList<>();
 		ArrayList<Estado> tmp;
 		
-		Estado current = af.estadoInicial();
+		Estado atual = af.estadoInicial();
 		char c;
 		String found = "";
 		
 		txt += "$";//simbolo para final do texto
 		
-		if(af.ehEstadoFinal(current))
+		if(af.ehEstadoFinal(atual))
 			result.add("&");
 		
 		for(int i = 0; i<txt.length(); i++){
 			c = txt.charAt(i);
 			found += c;
-			tmp = af.obterProximosEstados(current, c);
+			tmp = af.obterProximosEstados(atual, c);
 			if(!tmp.isEmpty()){
-				current = tmp.get(0);
-				if(af.ehEstadoFinal(current))
+				atual = tmp.get(0);
+				if(af.ehEstadoFinal(atual))
 					result.add(found);
 				
 				for(int k = i+1; k<txt.length(); k++){
 					c = txt.charAt(k);
 					found += c;
-					tmp = af.obterProximosEstados(current, c);
+					tmp = af.obterProximosEstados(atual, c);
 					if(!tmp.isEmpty()){
-						current = tmp.get(0);
-						if(af.ehEstadoFinal(current))
+						atual = tmp.get(0);
+						if(af.ehEstadoFinal(atual))
 							result.add(found);
 					}else{
 						found = "";
@@ -425,7 +424,7 @@ public class ControleAF {
 			}else
 				found = "";
 			
-			current = af.estadoInicial();
+			atual = af.estadoInicial();
 		}
 			
 		return result;
@@ -439,9 +438,9 @@ public class ControleAF {
 	 * @return			TRUE caso os dois AFs sejam equivalentes.
 	 */
 	public static boolean compare(Automato afd1, Automato afd2){
-		Automato a1 = difference(afd1, afd2);
-		Automato a2 = difference(afd2, afd1);
-		Automato union = union(a1, a2);
+		Automato a1 = diferenca(afd1, afd2);
+		Automato a2 = diferenca(afd2, afd1);
+		Automato union = uniao(a1, a2);
 		union = minimizacao(union);
 		return union.extras().contains("Empty");
 	}
@@ -453,8 +452,8 @@ public class ControleAF {
 	 * @param afd2		AF usado para a diferença.
 	 * @return			AF equivalente a AFD1 - AFD2.
 	 */
-	private static Automato difference(Automato afd1, Automato afd2){
-		return intersection(afd1, complement(afd2));
+	private static Automato diferenca(Automato afd1, Automato afd2){
+		return intersecao(afd1, complemento(afd2));
 	}
 	
 	/**
@@ -465,32 +464,32 @@ public class ControleAF {
 	 * @return			AF equivalente a intersecção dos dois
 	 * 					AFs dados.
 	 */
-	public static Automato intersection(Automato afd1, Automato afd2){
-		afd1 = complement(afd1);
-		afd2 = complement(afd2);
-		Automato inter = union(afd1, afd2);
-		inter = complement(inter);
-		inter.extras("AF|AFD");
-		return inter;//minimize(inter);
+	public static Automato intersecao(Automato afd1, Automato afd2){
+		afd1 = complemento(afd1);
+		afd2 = complemento(afd2);
+		Automato intersecao = uniao(afd1, afd2);
+		intersecao = complemento(intersecao);
+		intersecao.extras("AF|AFD");
+		return intersecao;//minimize(inter);
 	}
 	
 	/**
 	 * Função que une dois alfabetos.
 	 * 
-	 * @param a1		Alfabeto usado para a união.
-	 * @param a2		Alfabeto usado para a união.
+	 * @param alfabeto1		Primeiro Alfabeto usado para a união.
+	 * @param alfabeto2		Segundo Alfabeto usado para a união.
 	 * @return			Um novo alfabeto equivalente a união
 	 * 					dos dois alfabetos dados.
 	 */
-	private static ArrayList<Character> mergeAlphabets(ArrayList<Character> a1, 
-			ArrayList<Character> a2){
+	private static ArrayList<Character> fundirAlfabetos(ArrayList<Character> alfabeto1, 
+			ArrayList<Character> alfabeto2){
 		
-		ArrayList<Character> newAlphabet = new ArrayList<>(a1);
-		for(char c : a2){
-			if(!newAlphabet.contains(c))
-				newAlphabet.add(c);
+		ArrayList<Character> novoAlfabeto = new ArrayList<>(alfabeto1);
+		for(char c : alfabeto2){
+			if(!novoAlfabeto.contains(c))
+				novoAlfabeto.add(c);
 		}
-		return newAlphabet;
+		return novoAlfabeto;
 	}
 	
 	/**
@@ -502,7 +501,7 @@ public class ControleAF {
 	 * @return			AF representando a união dos dois
 	 * 					AFs dados.
 	 */
-	private static Automato union(Automato afd1, Automato afd2){
+	private static Automato uniao(Automato afd1, Automato afd2){
 		if(!afd1.extras().contains("AFD_Min"))
 			afd1 = minimizacao(afd1);
 		
@@ -512,7 +511,7 @@ public class ControleAF {
 			afd2 = afd2.clone(true);
 		
 		Automato union = 
-				new Automato(mergeAlphabets(afd1.alfabeto(), afd2.alfabeto()));
+				new Automato(fundirAlfabetos(afd1.alfabeto(), afd2.alfabeto()));
 		
 		Estado newQ0 = new Estado("Q03");
 		union.adicionarEstado(newQ0);
@@ -531,14 +530,6 @@ public class ControleAF {
 		union.adicionarSimbolo('&');
 		union.adicionarTransicao(newQ0, '&', afd1.estadoInicial());
 		union.adicionarTransicao(newQ0, '&', afd2.estadoInicial());
-		
-		/*for(char c : union.getAlphabet())
-			for(State s : afd1.getNextStates(afd1.getStartingState(), c))
-				union.addTransition(newQ0, c, s);
-		
-		for(char c : union.getAlphabet())
-			for(State s : afd2.getNextStates(afd2.getStartingState(), c))
-				union.addTransition(newQ0, c, s);*/
 		
 		return union;
 	}

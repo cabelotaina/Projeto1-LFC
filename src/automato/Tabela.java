@@ -7,30 +7,30 @@ import javax.swing.table.AbstractTableModel;
 @SuppressWarnings("serial")
 public class Tabela extends AbstractTableModel {
 	
-private Automato automaton;
+private Automato automato;
 	
-	public Tabela(Automato automaton) {
+	public Tabela(Automato automato) {
 		super();
-		this.automaton = automaton;
+		this.automato = automato;
 	}
 	
 	@Override
 	public int getColumnCount() {
-		if(automaton == null)
+		if(automato == null)
 			return 0;
-		return automaton.alfabeto().size() + 2;
+		return automato.alfabeto().size() + 2;
 	}
 
 	@Override
 	public int getRowCount() {
-		if(automaton == null)
+		if(automato == null)
 			return 0;
-		return automaton.estados().size() + 1;
+		return automato.estados().size() + 1;
 	}
 
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		if(automaton == null)
+		if(automato == null)
 			return "";
 		if(rowIndex == 0 && (columnIndex == 0 || columnIndex == 1)){
 			if(columnIndex == 0)
@@ -40,21 +40,21 @@ private Automato automaton;
 			else
 				return "";
 		}else if(rowIndex == 0)
-			return automaton.alfabeto().get(columnIndex-2);
+			return automato.alfabeto().get(columnIndex-2);
 		else if(columnIndex == 0){
 			Estado tmp = (Estado) this.getValueAt(rowIndex, 1);
 			String s = "";
-			if(automaton.estadoInicial().equals(tmp))
+			if(automato.estadoInicial().equals(tmp))
 				s += "->";
-			if(automaton.ehEstadoFinal(tmp))
+			if(automato.ehEstadoFinal(tmp))
 				s += "*";
 			return s;
 		}else if(columnIndex == 1){
-			return automaton.estados().get(rowIndex-1);
+			return automato.estados().get(rowIndex-1);
 		}else{
 			Estado tmp = (Estado) this.getValueAt(rowIndex, 1);
 			char trigger = (char) this.getValueAt(0, columnIndex);
-			ArrayList<Estado> nexts = automaton.obterProximosEstados(tmp, trigger);
+			ArrayList<Estado> nexts = automato.obterProximosEstados(tmp, trigger);
 			return (nexts.isEmpty()?"--":nexts.toString());
 		}
 	}

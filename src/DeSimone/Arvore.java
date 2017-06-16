@@ -6,44 +6,44 @@ import java.util.Stack;
 import expressao_regular.ControleER;
 
 public class Arvore {
-	private No root;
-	private ArrayList<No> listLeaves;
+	private No raiz;
+	private ArrayList<No> listaFolhas;
 	
-	public Arvore(String regEx) {
-		root = createSubTrees(null, regEx);
-		listLeaves = new ArrayList<>();
-		addLeavesInOrder();
-		costuraEmOrderRec(root);
+	public Arvore(String expressao_regular) {
+		raiz = createSubTrees(null, expressao_regular);
+		listaFolhas = new ArrayList<>();
+		adicionarFolhasEmOrdem();
+		costuraEmOrdemRec(raiz);
 		
-		System.out.println(listLeaves);
-		printPreOrderRec(root);
+		System.out.println(listaFolhas);
+		printPreOrderRec(raiz);
 	}
 	
 	public No getRoot(){
-		return this.root;
+		return this.raiz;
 	}
 	
 	public ArrayList<No> getListLeaves(){
-		return this.listLeaves;
+		return this.listaFolhas;
 	}
 
-	private No createSubTrees(No n, String regEx) {
+	private No createSubTrees(No n, String expressao_regular) {
 		No newNodo = new No();
 		SubArvore sub = SubArvore.obterInstancia();
 		
-		regEx = removeExternalParentheses(regEx);
-		int raiz = sub.posicaoDaRaiz(regEx);
+		expressao_regular = removeExternalParentheses(expressao_regular);
+		int raiz = sub.posicaoDaRaiz(expressao_regular);
 		
-		if(raiz == -1 && regEx.length() > 1)
-			return createSubTrees(n, regEx);
-		else if(raiz == -1 && regEx.length() == 1)
-			return new No(regEx.charAt(0), n);
+		if(raiz == -1 && expressao_regular.length() > 1)
+			return createSubTrees(n, expressao_regular);
+		else if(raiz == -1 && expressao_regular.length() == 1)
+			return new No(expressao_regular.charAt(0), n);
 		
-		newNodo.setC(regEx.charAt(raiz));
+		newNodo.setC(expressao_regular.charAt(raiz));
 		newNodo.setPai(n);
 		
-		String erEsq = regEx.substring(0, raiz);
-		String erDir = regEx.substring(raiz+1, regEx.length());
+		String erEsq = expressao_regular.substring(0, raiz);
+		String erDir = expressao_regular.substring(raiz+1, expressao_regular.length());
 		
 		if(erEsq.length() > 1)
 			newNodo.setFilhoEsq(createSubTrees(newNodo, erEsq));
@@ -58,12 +58,12 @@ public class Arvore {
 		return newNodo;
 	}
 	
-	private String removeExternalParentheses(String regEx){
-		String tmp = regEx;
+	private String removeExternalParentheses(String expressao_regular){
+		String tmp = expressao_regular;
 		Stack<Character> stackParentheses = new Stack<>();
 		char cTmp;
 		
-		if(tmp.charAt(0) == '(' && tmp.charAt(regEx.length()-1) == ')'){
+		if(tmp.charAt(0) == '(' && tmp.charAt(expressao_regular.length()-1) == ')'){
 			if(tmp.charAt(0) == '(' && tmp.charAt(tmp.length()-1) == ')')
 				tmp = "[" +tmp.substring((1), tmp.length()-1)+ "]";
 				
@@ -84,16 +84,16 @@ public class Arvore {
 			if(stackParentheses.isEmpty())
 				return tmp.substring(1, tmp.length()-1);
 			else
-				return regEx;
+				return expressao_regular;
 		}else
-			return regEx;
+			return expressao_regular;
 	}
 	
-	private void costuraEmOrderRec(No root){
+	private void costuraEmOrdemRec(No root){
 		if(root == null)
 			return;
 		
-		costuraEmOrderRec(root.getFilhoEsq());
+		costuraEmOrdemRec(root.getFilhoEsq());
 		
 		if(!ControleER.isBinaryOperator(root.getC())){
 			No pai = root.getPai();
@@ -111,12 +111,12 @@ public class Arvore {
 				root.setCostura(new No('$', null));
 		}
 		
-		costuraEmOrderRec(root.getFilhoDir());
+		costuraEmOrdemRec(root.getFilhoDir());
 	}
 	
-	private void addLeavesInOrder(){
+	private void adicionarFolhasEmOrdem(){
 		Stack<No> stackNodes = new Stack<>();
-		No n = root;
+		No n = raiz;
 		int num = 1;
 
 		while(!stackNodes.isEmpty() || n != null){
@@ -127,7 +127,7 @@ public class Arvore {
 				n = stackNodes.pop();
 				if(!ControleER.isOperator(n.getC(),false)){
 					n.setNumero(num);
-					listLeaves.add(n);
+					listaFolhas.add(n);
 					++num;
 				}
 				n = n.getFilhoDir();

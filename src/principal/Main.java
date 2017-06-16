@@ -254,7 +254,7 @@ public class Main {
 		af = (Automato) getRegular(side, "AFD");
 		if(extras.contains("AFD_Comp"))
 			panels.get(side-1).get("AFD_Comp").
-				setRegular(ControleAF.complement(af));
+				setRegular(ControleAF.complemento(af));
 		
 		if(extras.contains("AFD_Min"))
 			panels.get(side-1).get("AFD_Min").
@@ -399,7 +399,7 @@ public class Main {
 			determinize(side,false);
 		
 		Automato afd = (Automato) getRegular(side, "AFD");
-		setRightContent(side, "AFD_Comp", ControleAF.complement(afd), false);
+		setRightContent(side, "AFD_Comp", ControleAF.complemento(afd), false);
 		
 		if(updateExtras){
 			addExtra(side, "AFD|AFD_Comp");
@@ -514,7 +514,7 @@ public class Main {
 		Automato afd1 = (Automato) getRegular(1, "AFD_Min");
 		Automato afd2 = (Automato) getRegular(2, "AFD_Min");
 		
-		Automato inter = ControleAF.intersection(afd1, afd2);
+		Automato inter = ControleAF.intersecao(afd1, afd2);
 		RightContent content = new RightContent(inter);
 		
 		inter.titulo("AF: "+afd1.titulo()+" /\\ "+afd2.titulo());
