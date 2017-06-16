@@ -43,7 +43,7 @@ public class Main {
 	 */
 	
 	public static void main(String[] args) {
-		Automato automato = DeSimone.createAutomaton("(a.a)*");
+		Automato automato = DeSimone.criarAutomato("(a.a)*");
 		System.out.println(automato.estados());
 		System.out.println(automato.titulo());
 		
@@ -165,7 +165,7 @@ public class Main {
 		if(type == 0){
 			regular = ControleGR.createRegGrammar(titulo, reg);
 		}else if(type == 1){
-			regular = ControleER.createRegExpression(titulo, reg);
+			regular = ControleER.criarExpressaoRegular(titulo, reg);
 		}
 		
 		if(regular == null){
@@ -200,7 +200,7 @@ public class Main {
 		if(type == 0){
 			regular = ControleGR.createRegGrammar(titulo, reg);
 		}else if(type == 1){
-			regular = ControleER.createRegExpression(titulo, reg);
+			regular = ControleER.criarExpressaoRegular(titulo, reg);
 		}
 		
 		if(regular == null){

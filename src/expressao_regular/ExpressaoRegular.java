@@ -4,21 +4,21 @@ import principal.Regular;
 
 public class ExpressaoRegular extends Regular {
 	
-	private String regEx;
+	private String expressao_regular;
 	
-	public ExpressaoRegular(String regEx, String titulo) {
+	public ExpressaoRegular(String expressao_regular, String titulo) {
 		super();
-		this.regEx = regEx;
+		this.expressao_regular = expressao_regular;
 		titulo(titulo);
 	}
 	
-	/* RegEx */
-	public String getRegEx() {
-		return regEx;
+	/* Expressao Regular */
+	public String obterExpressaoRegular() {
+		return expressao_regular;
 	}
 
-	public void setRegEx(String regEx) {
-		this.regEx = regEx;
+	public void definirExpressaoRegular(String expressao_regular) {
+		this.expressao_regular = expressao_regular;
 	}
 	
 	/* Regular */
@@ -29,12 +29,12 @@ public class ExpressaoRegular extends Regular {
 	
 	@Override
 	public boolean isDumbGrEr(){
-		return regEx.equals("");
+		return expressao_regular.equals("");
 	}
 	
 	@Override
 	public String toString() {
-		return regEx;
+		return expressao_regular;
 	}
 	
 }

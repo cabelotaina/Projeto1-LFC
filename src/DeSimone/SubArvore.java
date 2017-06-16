@@ -55,7 +55,7 @@ public final class SubArvore {
 		char tmp;
 		for(int i = 0; i<expressao_regular.length(); i++){
 			tmp = expressao_regular.charAt(i);
-			if(pilhaParenteses.isEmpty() && ControleER.isOperator(tmp,false))
+			if(pilhaParenteses.isEmpty() && ControleER.ehOperador(tmp,false))
 				operadores.add(new Operator(tmp, i));
 			else if(tmp == '(')
 				pilhaParenteses.push('(');

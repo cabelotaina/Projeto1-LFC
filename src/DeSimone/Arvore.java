@@ -15,8 +15,8 @@ public class Arvore {
 		adicionarFolhasEmOrdem();
 		costuraEmOrdemRec(raiz);
 		
-		System.out.println(listaFolhas);
-		printPreOrderRec(raiz);
+		//System.out.println(listaFolhas);
+		imprimirPreOrdemRec(raiz);
 	}
 	
 	public No getRoot(){
@@ -95,7 +95,7 @@ public class Arvore {
 		
 		costuraEmOrdemRec(root.getFilhoEsq());
 		
-		if(!ControleER.isBinaryOperator(root.getC())){
+		if(!ControleER.ehOperadorBinario(root.getC())){
 			No pai = root.getPai();
 			if(pai != null){
 				while(pai.isCosturado()){
@@ -125,7 +125,7 @@ public class Arvore {
 				n = n.getFilhoEsq();
 			}else{
 				n = stackNodes.pop();
-				if(!ControleER.isOperator(n.getC(),false)){
+				if(!ControleER.ehOperador(n.getC(),false)){
 					n.setNumero(num);
 					listaFolhas.add(n);
 					++num;
@@ -136,11 +136,11 @@ public class Arvore {
 		
 	}
 	
-	public void printPreOrderRec(No root){
+	public void imprimirPreOrdemRec(No root){
 		if(root != null){
 			System.out.println("E: "+root.getFilhoEsq()+" - R: "+root+" - D: "+root.getFilhoDir()+" - Cost: "+root.getCostura());
-			printPreOrderRec(root.getFilhoEsq());
-			printPreOrderRec(root.getFilhoDir());
+			imprimirPreOrdemRec(root.getFilhoEsq());
+			imprimirPreOrdemRec(root.getFilhoDir());
 		}
 	}
 }

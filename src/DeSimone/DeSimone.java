@@ -19,7 +19,7 @@ public abstract class DeSimone {
 	 * @param regEx		Expressão regular que se quer achar o AFD.
 	 * @return			AFD equivalente a Expressão Regular dada.
 	 */
-	public static Automato createAutomaton(String regEx){
+	public static Automato criarAutomato(String regEx){
 		Arvore tree = new Arvore(regEx);
 		HashMap<ComposicaoEstados, ArrayList<No>> comp = new HashMap<>();//composicao de estados
 		Automato af = new Automato();
@@ -117,7 +117,7 @@ public abstract class DeSimone {
 		for(No n : sTmp.getComposition()){
 			traversed  = new ArrayList<>();
 			if(n.getC() != '$')
-				searchTree(n, !ControleER.isOperator(n.getC(),false), result, traversed, tree);
+				searchTree(n, !ControleER.ehOperador(n.getC(),false), result, traversed, tree);
 		}
 		
 		return result;
