@@ -28,7 +28,7 @@ import principal.WarningException;
  * 
  */
 @SuppressWarnings("serial")
-public class NovoAFDouER extends JDialog implements ActionListener {
+public class NovoAFouER extends JDialog implements ActionListener {
 	
 	private Main main;
 	private int type;
@@ -46,7 +46,7 @@ public class NovoAFDouER extends JDialog implements ActionListener {
 	/**
 	 * Create the application.
 	 */
-	public NovoAFDouER(JFrame parent, Main main, int type, int side, 
+	public NovoAFouER(JFrame parent, Main main, int type, int side, 
 			String titulo, String reg) {
 		super(parent, true);
 		this.main = main;

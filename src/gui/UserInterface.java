@@ -192,9 +192,6 @@ public class UserInterface {
 		itemComplemento.addActionListener(mListener);
 		mnOpUnaria.add(itemComplemento);
 
-		JSeparator separator = new JSeparator();
-		mnOpUnaria.add(separator);
-
 		JMenu mnOpBinaria = new JMenu("Op. Bin\u00E1ria");
 		menuBar.add(mnOpBinaria);
 
@@ -368,10 +365,10 @@ public class UserInterface {
 			try {
 				switch (cmd) {
 				case "Automato":
-					new NovoAFDouER(frame, main, 0, side, null, null);
+					new NovoAFouER(frame, main, 0, side, null, null);
 					break;
 				case "Express\u00E3o Regular":
-					new NovoAFDouER(frame, main, 1, side, null, null);
+					new NovoAFouER(frame, main, 1, side, null, null);
 					break;
 				case "Determiniza\u00E7\u00E3o":
 					main.determinize(side);
@@ -428,7 +425,7 @@ public class UserInterface {
 				case "Edit":
 					Regular reg = main.getRegular(side, "GR/ER");
 					int type = reg.ehGramatica() ? 0 : 1;
-					new NovoAFDouER(frame, main, type, side, reg.titulo(), reg.toString());
+					new NovoAFouER(frame, main, type, side, reg.titulo(), reg.toString());
 					break;
 				case "Del":
 					int op = JOptionPane.showConfirmDialog(frame, "Voce tem certeza que deseja deletar esta GR/ER?");

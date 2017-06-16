@@ -413,35 +413,6 @@ public class Main {
 	}
 	
 	/**
-	 * Realiza uma busca no texto passado.
-	 * Caso o usuario esteja visualizando o AFD Complementar, ele que sera
-	 * utilizado na busca, caso contrario sera utilizado o AFD Minimo.
-	 * 
-	 * @param side			Qual lado? 1 ou 2.
-	 * @param txt			Texto usado para a busca.
-	 * @return				Todas as strings do texto aceitas pelo AFD_Min.
-	 * @throws Exception	Caso haja um erro vindo do banco de dados.
-	 */
-	public ArrayList<String> search(int side, String txt) throws Exception{
-		if(getRegular(side, "GR/ER") == null && 
-				getRegular(side, "AF") == null)//ainda n tem GR/ER
-			return null;
-		
-		Automato afd;
-		if(ui.getComboBoxSelectedItem(side).equals("AFD_Comp")){//usuario quer usar o complemento
-			if(getRegular(side, "AFD_Comp") == null)
-				complement(side,true);
-			afd = (Automato) getRegular(side, "AFD_Comp");
-		}else{
-			if(getRegular(side, "AFD_Min") == null)
-				minimize(side,true);
-			afd = (Automato) getRegular(side, "AFD_Min");
-		}
-		
-		return ControleAF.search(txt, afd, true);
-	}
-	
-	/**
 	 * Determiniza, caso necessario, e Miniminiza o AF de um dos lados do programa.
 	 * Caso os dois lados sejam iguais, atualiza os dois.
 	 * Esta função atualiza o valor de 'Extras' da Gr/Er.
