@@ -151,7 +151,7 @@ public class Main {
 	 * @throws WarningException		Caso haja um erro com a Gr/Er entrada pelo usuario.
 	 * @throws Exception			Caso haja um erro vindo do banco de dados.
 	 */
-	public void addGrEr(int type, int side, String titulo, String reg) throws Exception {
+	public void addGrEr(int type, int side, String titulo, Object reg) throws Exception {
 		Regular regular = null;
 		
 		if(titulo == null || titulo.equals(""))
@@ -165,9 +165,10 @@ public class Main {
 					" com este titulo, por favor escolha outro.");
 		
 		if(type == 0){
-			regular = ControleGR.definirGramatica(titulo, reg);
+			//regular = ControleGR.definirGramatica(titulo, (String) reg);
+			regular = (Regular) reg;
 		}else if(type == 1){
-			regular = ControleER.criarExpressaoRegular(titulo, reg);
+			regular = ControleER.criarExpressaoRegular(titulo, (String) reg);
 		}
 		
 		if(regular == null){
