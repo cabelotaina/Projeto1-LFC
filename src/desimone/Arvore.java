@@ -16,7 +16,7 @@ public class Arvore {
 		costuraEmOrdemRec(raiz);
 		
 		//System.out.println(listaFolhas);
-		imprimirPreOrdemRec(raiz);
+		//imprimirPreOrdemRec(raiz);
 	}
 	
 	public No getRoot(){

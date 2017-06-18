@@ -76,6 +76,7 @@ public class Main {
 		
 		if(regs != null && regs.size() > 0){
 			for(Regular r : regs)
+				//System.out.println(r.);
 				internalAddGrEr(r);
 		}
 	}
@@ -135,7 +136,12 @@ public class Main {
 	 * @param r		'Conjunto' Regular a ser adicionado.
 	 */
 	private void internalAddGrEr(Regular r){
-		regulares.put(r.titulo(), r); 
+		//System.out.println(r.titulo());
+		if (r == null){
+			return;
+		}
+		
+		regulares.put(r.titulo(), r);
 		ui.addInTheList(r.titulo());
 	}
 	

@@ -102,6 +102,6 @@ public class Transicoes {
 
 	@Override
 	public String toString() {
-		return "Transitions [transitions=" + transicoes + "]";
+		return transicoes.toString();
 	}
 }

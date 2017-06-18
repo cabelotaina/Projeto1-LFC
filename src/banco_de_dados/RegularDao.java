@@ -4,11 +4,12 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import expressao_regular.ExpressaoRegular;
+import automato.Automato;
+import automato.ControleAF;
 import expressao_regular.ControleER;
+import expressao_regular.ExpressaoRegular;
 import gramatica.Gramatica;
 import principal.Regular;
-import gramatica.ControleGR;
 
 public class RegularDao extends Dao {
 	
@@ -17,26 +18,23 @@ public class RegularDao extends Dao {
 	}
 	
 	public void adicionarRegular(Regular r) throws Exception {
-		if(r.ehAutomato()){
-			System.out.println("RegularDao > Soh eh possivel adicionar GRs ou ERs!");
-			return;
-		}else if(r.isDumbGrEr())//intersecções não vão ser salvas no DB
+		if(r.isDumbGrEr())//intersecções não vão ser salvas no DB
 			return;
 		
 		HashMap<String, String> dados = new HashMap<>();
 		dados.put("titulo", r.titulo());
-		if(r.ehGramatica())
-			dados.put("gr_er", ((Gramatica)r).obterGramatica());
+		if(r.ehAutomato())
+			dados.put("gr_er", ((Automato)r).transicoes().toString());
 		else
 			dados.put("gr_er", ((ExpressaoRegular)r).obterExpressaoRegular());
-		dados.put("extras", r.extras());
+		//dados.put("extras", r.extras());
 		
 		this.insert(dados);
 	}
 	
 	public void editarRegular(Regular r) throws Exception {
 		if(r.ehAutomato()){
-			System.out.println("RegularDao > Soh eh possivel adicionar GRs ou ERs!");
+			System.out.println("2RegularDao > Soh eh possivel adicionar GRs ou ERs!");
 			return;
 		}else if(r.isDumbGrEr())//intersecções não vão ser salvas no DB
 			return;
@@ -56,7 +54,7 @@ public class RegularDao extends Dao {
 	
 	public void definirExtras(Regular r) throws Exception {
 		if(r.ehAutomato()){
-			System.out.println("RegularDao > Soh eh possivel adicionar GRs ou ERs!");
+			System.out.println("3RegularDao > Soh eh possivel adicionar GRs ou ERs!");
 			return;
 		}else if(r.isDumbGrEr())//intersecções não vão ser salvas no DB
 			return;
@@ -72,7 +70,7 @@ public class RegularDao extends Dao {
 	
 	public void removeRegular(Regular r) throws Exception {
 		if(r.ehAutomato()){
-			System.out.println("RegularDao > Soh eh possivel adicionar GRs ou ERs!");
+			System.out.println("4RegularDao > Soh eh possivel adicionar GRs ou ERs!");
 			return;
 		}else if(r.isDumbGrEr())//intersecções não vão ser salvas no DB
 			return;
@@ -92,13 +90,13 @@ public class RegularDao extends Dao {
 		
 		while(resultado != null && resultado.next()){
 			tmpTitulo = resultado.getString("titulo");
-			if(tmpTitulo.contains("GR:")){
-				tmpReg = ControleGR.definirGramatica(tmpTitulo, resultado.getString("gr_er"));
-				tmpReg.extras(resultado.getString("extras"));
+			if(tmpTitulo.contains("ER:")){
+				tmpReg = ControleER.criarExpressaoRegular(tmpTitulo, resultado.getString("gr_er"));
+				//tmpReg.extras(resultado.getString("extras"));
 				regResult.add(tmpReg);
 			}else{
-				tmpReg = ControleER.criarExpressaoRegular(tmpTitulo, resultado.getString("gr_er"));
-				tmpReg.extras(resultado.getString("extras"));
+				tmpReg = ControleAF.definirAutomato(tmpTitulo, resultado.getString("gr_er"));
+				//tmpReg.extras(resultado.getString("extras"));
 				regResult.add(tmpReg);
 			}
 		}

@@ -125,21 +125,23 @@ public class NovoAFouER extends JDialog implements ActionListener {
 			scrollPane.setViewportView(textArea);
 		} else {
 
-			String[][] dados = { { "", "a", "b" }, { "*->q0", "q1", "q2" }, { "q1", "q1", "q2" },
-					{ "*q2", "q1", "q2" } };
-
+			 String[][] dados = { { "", "a", "b" }, { "*->q0", "q1", "q2" }, {
+			 "q1", "q1", "q2" },
+			 { "*q2", "q1", "q2" } };
+			
+			 int i = 0, j = 0;
+			 for (String[] linha : dados) {
+			
+			 for (String item : linha) {
+			 tabela.setValueAt(item, i, j);
+			 j++;
+			 }
+			 i++;
+			 j = 0;
+			
+			 }
+			
 			tabela.setTableHeader(null);
-			int i = 0, j = 0;
-			for (String[] linha : dados) {
-
-				for (String item : linha) {
-					tabela.setValueAt(item, i, j);
-					j++;
-				}
-				i++;
-				j = 0;
-
-			}
 			scrollPane.setViewportView(tabela);
 		}
 
