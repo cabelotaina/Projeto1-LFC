@@ -6,7 +6,6 @@ import java.util.HashMap;
 import automato.Automato;
 import automato.ControleAF;
 import banco_de_dados.RegularDao;
-import desimone.DeSimone;
 import expressao_regular.ControleER;
 import gui.RightContent;
 import gui.ShowAF;
@@ -30,16 +29,6 @@ public class Main {
 	// classe para interação com banco de dados
 	private RegularDao dao;
 
-	/*
-	 * Coisas que deveria ter feito: -Poder ver e utilizar os AFs
-	 * intermediarios, como uniao, diferença, complemento... -No meu soh da pra
-	 * fazer isso com a intersecção... -Tirar o alwaysOnTop das janelas -Na
-	 * parte de busca, usar um JTextEdit em vez de um input normal e nao feixar
-	 * a aba logo apos a 1* busca -Fazer um tratamento para expressoes da forma:
-	 * a, (a), durante o script De Simone -Permitir entrar com ERs do tpw: a***,
-	 * a?+ ...
-	 */
-
 	public static void main(String[] args) {
 		// Automato automato = DeSimone.criarAutomato("b*|a*");
 		// ControleAF.definirAutomato("Teste Maurilio",
@@ -51,12 +40,8 @@ public class Main {
 
 	public Main(String string) {
 		this.dao = new RegularDao();
-		ArrayList<Regular> regs = null;
 		try {
-			regs = dao.obterTudo();
-			for (Regular r : regs) {
-				dao.removeRegular(r);
-			}
+			dao.removeTudo();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -82,11 +67,12 @@ public class Main {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
+		
 		if (regs != null && regs.size() > 0) {
-			for (Regular r : regs)
-				// System.out.println(r.);
+			for (Regular r : regs) {
+				System.out.println(r.titulo());
 				internalAddGrEr(r);
+			}
 		}
 	}
 
@@ -95,7 +81,7 @@ public class Main {
 	 */
 	private void initHashs() {
 		HashMap<String, RightContent> l1 = new HashMap<>();
-		l1.put("AF/ER", new RightContent());
+		l1.put("ER", new RightContent());
 		l1.put("AF", new RightContent());
 		l1.put("AFD", new RightContent());
 		l1.put("AFD_Min", new RightContent());
@@ -104,7 +90,7 @@ public class Main {
 		panels.add(l1);
 
 		HashMap<String, RightContent> l2 = new HashMap<>();
-		l2.put("AF/ER", new RightContent());
+		l2.put("ER", new RightContent());
 		l2.put("AF", new RightContent());
 		l2.put("AFD", new RightContent());
 		l2.put("AFD_Min", new RightContent());
@@ -134,7 +120,7 @@ public class Main {
 	 */
 	private void cleanExtraPanels(int side) {
 		HashMap<String, RightContent> panel = panels.get(side - 1);
-		panel.get("AF/ER").setRegular(null);
+		panel.get("ER").setRegular(null);
 		panel.get("AF").setRegular(null);
 		panel.get("AFD").setRegular(null);
 		panel.get("AFD_Min").setRegular(null);
@@ -148,9 +134,9 @@ public class Main {
 	 *            'Conjunto' Regular a ser adicionado.
 	 */
 	private void internalAddGrEr(Regular r) {
-		 if (r == null){
-		 return;
-		 }
+		if (r == null) {
+			return;
+		}
 
 		regulares.put(r.titulo(), r);
 		ui.addInTheList(r.titulo());
@@ -190,8 +176,10 @@ public class Main {
 		if (type == 0) {
 			regular = (Regular) reg;
 			regular.titulo(titulo);
+			regular.extra("");
 		} else if (type == 1) {
 			regular = ControleER.criarExpressaoRegular(titulo, (String) reg);
+			regular.extra("");
 		}
 
 		if (regular == null) {
@@ -203,9 +191,13 @@ public class Main {
 		ui.addInTheList(titulo);
 
 		dao.adicionarRegular(regular);
-
-		setRightContent(side, "AF/ER", regular, true);
-		createExtras(side);
+		if (type == 0) {
+			setRightContent(side, "AF", regular, true);
+			createExtras(side, "AF");
+		} else if (type == 1) {
+			setRightContent(side, "ER", regular, true);
+			createExtras(side, "ER");
+		}
 	}
 
 	/**
@@ -216,7 +208,7 @@ public class Main {
 	 * @param side
 	 *            Qual lado? 1 ou 2.
 	 * @param titulo
-	 *            Titulo da Gr/Er a ser editada.
+	 *            Titulo da Af/Er a ser editada.
 	 * @param reg
 	 *            Gramatica ou Expressão regular a ser editada.
 	 * 
@@ -230,8 +222,10 @@ public class Main {
 
 		if (type == 0) {
 			regular = ControleAF.definirAutomato(titulo, reg);
+			updateRightContentPanel(side, "AF", regular, true);
 		} else if (type == 1) {
 			regular = ControleER.criarExpressaoRegular(titulo, reg);
+			updateRightContentPanel(side, "ER", regular, true);
 		}
 
 		if (regular == null) {
@@ -244,7 +238,6 @@ public class Main {
 
 		dao.editarRegular(regular);
 
-		updateRightContentPanel(side, "AF/ER", regular, true);
 	}
 
 	/**
@@ -255,11 +248,20 @@ public class Main {
 	 * @throws Exception
 	 *             Caso haja um erro vindo do banco de dados.
 	 */
-	public void deleteGrEr(int side) throws Exception {
-		Regular reg = getRegular(side, "AF/ER");
+	public void deleteAfEr(int side) throws Exception {
+		Regular reg = null;
+		String type = null;
+		if (!(getRegular(side, "ER") == null)) {
+			reg = getRegular(side, "ER");
+			type = "ER";
+		} else {
+			reg = getRegular(side, "AF");
+			type = "AF";
+		}
+
 		if (reg != null) {
 			regulares.remove(reg.titulo());
-			setRightContent(side, "AF/ER", null, true);
+			setRightContent(side, type, null, true);
 			ui.removeOfTheList(side, reg.titulo());
 			dao.removeRegular(reg);
 		}
@@ -271,8 +273,8 @@ public class Main {
 	 * @param side
 	 *            Qual lado? 1 ou 2.
 	 */
-	private void createExtras(int side) {
-		Regular reg = getRegular(side, "AF/ER");
+	private void createExtras(int side, String type) {
+		Regular reg = getRegular(side, type);
 		String extras = reg.extras();
 
 		if (!reg.isDumbGrEr() && (extras.equals("") || extras.contains("AF")))
@@ -291,7 +293,7 @@ public class Main {
 	}
 
 	/**
-	 * Função utilizada para mudar o conteudo de um painel. Pode tanto ser
+	 * Funcao utilizada para mudar o conteudo de um painel. Pode tanto ser
 	 * chamada pelo usuario clicando 2x num elemento da lista, como pelo usuario
 	 * mudando o valor de um dos comboBox.
 	 * 
@@ -304,16 +306,15 @@ public class Main {
 		if (regulares.containsKey(key)) {// left list [key == titulo]
 			Regular reg = regulares.get(key);
 			if (regulares.get(key).ehAutomato()) {
-
 				Regular automato = ControleAF.definirAutomato(reg.titulo(), ((Automato) reg).transicoesString());
-				setRightContent(side, "AF", automato, false);
-
-				//setRightContent(side, "AF/ER", automato, true);
-				//setRightContent(side, "AF", automato, false);
-			} else
-				setRightContent(side, "AF/ER", reg, true);
-
-			createExtras(side);
+				setRightContent(side, "AF", automato, true);
+				// setRightContent(side, "AF/ER", automato, true);
+				// setRightContent(side, "AF", automato, false);
+				createExtras(side, "AF");
+			} else {
+				setRightContent(side, "ER", reg, true);
+				createExtras(side, "ER");
+			}
 		} else if (panels.get(side - 1).containsKey(key)) {// change on comboBox
 			RightContent panel = panels.get(side - 1).get(key);
 			ui.setRightContent(side, panel);
@@ -321,12 +322,12 @@ public class Main {
 	}
 
 	/**
-	 * Função utilizada internamente para mudar o conteudo de um dos paineis.
+	 * Funcao utilizada internamente para mudar o conteudo de um dos paineis.
 	 * 
 	 * @param side
 	 *            Qual lado? 1 ou 2.
 	 * @param key
-	 *            Qual 'key'? AF/ER, AF, AFD, AFD_Min, AFD_Comp.
+	 *            Qual 'key'? ER, AF, AFD, AFD_Min, AFD_Comp.
 	 * @param reg
 	 *            'Conjunto' Regular que ira ser adicionado ao painel.
 	 * @param clean
@@ -340,7 +341,8 @@ public class Main {
 		if (reg != null)
 			panel.setRegular(reg);
 
-		if (!ui.setComboBoxSelectedItem(side, key)) // caso ja esteja no panel do
+		if (!ui.setComboBoxSelectedItem(side, key)) // caso ja esteja no panel
+													// do
 													// 'key', entao da refresh
 													// no panel
 			ui.setRightContent(side, panel);
@@ -360,12 +362,12 @@ public class Main {
 	 *            Devesse limpar os outros paineis?
 	 */
 	private void updateRightContentPanel(int side, String key, Regular regular, boolean clean) {
-		if (isSameGrErInBothPanels()) {// ms AF/ER nos 2 lados
+		if (ehOMesmoAutomatoEmAmbosOsPaineis()) {// ms AF/ER nos 2 lados
 			setRightContent((side % 2) + 1, key, regular, clean);
-			createExtras((side % 2) + 1);
+			createExtras((side % 2) + 1, key);
 		}
 		setRightContent(side, key, regular, clean);
-		createExtras(side);
+		createExtras(side, key);
 	}
 
 	/**
@@ -394,7 +396,7 @@ public class Main {
 	 *             Caso haja um erro vindo do banco de dados.
 	 */
 	private void determinize(int side, boolean updateExtras) throws Exception {
-		if (getRegular(side, "AF/ER") == null)// ainda n tem AF/ER
+		if (getRegular(side, "ER") == null)// ainda n tem AF/ER
 			return;
 		else if (getRegular(side, "AFD") != null) { // AFD ja esta criado, entao
 													// soh mude para o panel
@@ -411,7 +413,7 @@ public class Main {
 			dao.definirExtras(getRegular(side, "AF/ER"));
 		}
 
-		if (isSameGrErInBothPanels())
+		if (ehOMesmoAutomatoEmAmbosOsPaineis())
 			determinize((side % 2) + 1, false);
 	}
 
@@ -462,14 +464,14 @@ public class Main {
 			dao.definirExtras(getRegular(side, "AF/ER"));
 		}
 
-		if (isSameGrErInBothPanels())
+		if (ehOMesmoAutomatoEmAmbosOsPaineis())
 			complemento((side % 2) + 1, false);
 	}
 
 	/**
 	 * Determiniza, caso necessario, e Miniminiza o AF de um dos lados do
-	 * programa. Caso os dois lados sejam iguais, atualiza os dois. Esta função
-	 * atualiza o valor de 'Extras' da Gr/Er.
+	 * programa. Caso os dois lados sejam iguais, atualiza os dois. Esta
+	 * função atualiza o valor de 'Extras' da Gr/Er.
 	 *
 	 * @param side
 	 *            Qual lado? 1 ou 2.
@@ -492,7 +494,7 @@ public class Main {
 	 *             Caso haja um erro vindo do banco de dados.
 	 */
 	private void minimize(int side, boolean updateExtras) throws Exception {
-		if (getRegular(side, "AF/ER") == null)// ainda n tem AF/ER
+		if (getRegular(side, "ER") == null)// ainda n tem AF/ER
 			return;
 		else if (getRegular(side, "AFD_Min") != null) {// AFD_Min ja esta
 														// criado, entao soh
@@ -510,10 +512,10 @@ public class Main {
 
 		if (updateExtras) {
 			addExtra(side, "AFD|AFD_Min");
-			dao.definirExtras(getRegular(side, "AF/ER"));
+			dao.definirExtras(getRegular(side, "AF"));
 		}
 
-		if (isSameGrErInBothPanels())
+		if (ehOMesmoAutomatoEmAmbosOsPaineis())
 			minimize((side % 2) + 1, false);
 	}
 
@@ -529,7 +531,7 @@ public class Main {
 		if (getRegular(1, "AFD_Min") == null)// melhor usar os AFDs minimos para
 												// comparar...
 			minimize(1, true);
-		if (!isSameGrErInBothPanels() && getRegular(2, "AFD_Min") == null)
+		if (!ehOMesmoAutomatoEmAmbosOsPaineis() && getRegular(2, "AFD_Min") == null)
 			minimize(2, true);
 
 		Automato afd1 = (Automato) getRegular(1, "AFD_Min");
@@ -548,7 +550,7 @@ public class Main {
 		if (getRegular(1, "AFD_Min") == null)// melhor usar os AFDs minimos para
 												// comparar...
 			minimize(1, true);
-		if (!isSameGrErInBothPanels() && getRegular(2, "AFD_Min") == null)
+		if (!ehOMesmoAutomatoEmAmbosOsPaineis() && getRegular(2, "AFD_Min") == null)
 			minimize(2, true);
 
 		Automato afd1 = (Automato) getRegular(1, "AFD_Min");
@@ -569,9 +571,9 @@ public class Main {
 	 * 
 	 * @return
 	 */
-	private boolean isSameGrErInBothPanels() {
-		Regular r1 = getRegular(1, "AF/ER");
-		Regular r2 = getRegular(2, "AF/ER");
+	private boolean ehOMesmoAutomatoEmAmbosOsPaineis() {
+		Regular r1 = getRegular(1, "AF");
+		Regular r2 = getRegular(2, "AF");
 
 		if (r1 != null && r2 != null && r2.titulo().equals(r1.titulo())) {
 			return true;
@@ -621,7 +623,7 @@ public class Main {
 	 *            Valor 'extra' a ser adicionado.
 	 */
 	private void addExtra(int side, String extra) {
-		Regular reg = getRegular(side, "AF/ER");
+		Regular reg = getRegular(side, "AF");
 
 		reg.extra(extra);
 	}

@@ -17,22 +17,19 @@ public class RegularDao extends Dao {
 	}
 
 	public void adicionarRegular(Regular r) throws Exception {
-		if (r.isDumbGrEr())// intersecoes nao vao ser salvas no DB
-			return;
 
 		HashMap<String, String> dados = new HashMap<>();
 		dados.put("titulo", r.titulo());
-		if (r.ehAutomato())
+		if (r.ehAutomato()) {
 			dados.put("gr_er", ((Automato) r).transicoesString());
-		else
+		} else
 			dados.put("gr_er", ((ExpressaoRegular) r).obterExpressaoRegular());
-		// dados.put("extras", r.extras());
+		dados.put("extras", r.extras());
 
 		this.insert(dados);
 	}
 
 	public void editarRegular(Regular r) throws Exception {
-
 
 		if (r.isDumbGrEr())
 			return;
@@ -66,13 +63,15 @@ public class RegularDao extends Dao {
 
 	public void removeRegular(Regular r) throws Exception {
 
-		if (r.isDumbGrEr())
-			return;
-
 		HashMap<String, String> where = new HashMap<>();
-		//System.out.println("Na hora que vai remover da Lista: "+r.titulo());
 		where.put("titulo", r.titulo());
 		this.delete(where);
+	}
+
+	public void removeTudo() throws Exception {
+		String SQL = "DELETE FROM " + this.tabela;
+		this.query(SQL);
+		this.psmt.execute();
 	}
 
 	// Obter Tudo!!!!
@@ -88,12 +87,11 @@ public class RegularDao extends Dao {
 			tmpTitulo = resultado.getString("titulo");
 			if (tmpTitulo.contains("ER:")) {
 				tmpReg = ControleER.criarExpressaoRegular(tmpTitulo, resultado.getString("gr_er"));
-				// tmpReg.extras(resultado.getString("extras"));
+				tmpReg.extras(resultado.getString("extras"));
 				regResult.add(tmpReg);
 			} else {
-				//System.out.println("Na hora que vai colocar na lista: "+tmpTitulo);
 				tmpReg = ControleAF.definirAutomato(tmpTitulo, resultado.getString("gr_er"));
-				// tmpReg.extras(resultado.getString("extras"));
+				tmpReg.extras(resultado.getString("extras"));
 				regResult.add(tmpReg);
 			}
 		}

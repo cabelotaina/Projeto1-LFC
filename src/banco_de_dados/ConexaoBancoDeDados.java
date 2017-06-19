@@ -9,8 +9,9 @@ public class ConexaoBancoDeDados {
 	public static Connection obterConexao(){
 		if(CON == null){
 			try{
+				String banco = "jdbc:sqlite:lib/DataBase.db";
 				Class.forName("org.sqlite.JDBC");
-				CON = DriverManager.getConnection( "jdbc:sqlite:C:\\Users\\35223861833\\Documents\\GitHub\\Projeto1-LFC\\lib\\DataBase.db" );
+				CON = DriverManager.getConnection( banco );
 			}catch( Exception e ){
 				System.out.println( e );
 			}

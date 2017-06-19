@@ -99,7 +99,7 @@ public class NovoAFouER extends JDialog implements ActionListener {
 		getContentPane().add(panel, BorderLayout.NORTH);
 		panel.setLayout(new BorderLayout(0, 0));
 
-		JLabel label1 = new JLabel("Entrei com um titulo:");
+		JLabel label1 = new JLabel("Entre com um titulo:");
 		label1.setFont(new Font("Tahoma", Font.BOLD, 12));
 		panel.add(label1, BorderLayout.NORTH);
 
@@ -125,6 +125,8 @@ public class NovoAFouER extends JDialog implements ActionListener {
 			scrollPane.setViewportView(textArea);
 		} else {
 
+			//TODO: Comentar isso
+			
 			 String[][] dados = { { "", "a", "b" }, { "*->q0", "q1", "q2" }, {
 			 "q1", "q1", "q2" },
 			 { "*q2", "q1", "q2" } };

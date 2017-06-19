@@ -26,7 +26,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.ListSelectionModel;
 
@@ -125,12 +124,12 @@ public class UserInterface {
 		for (Component c : p.getComponents())
 			c.setEnabled(enabled);
 
-		if (enabled && main.isDumbGrEr(side)) {
+		//if (enabled && main.isDumbGrEr(side)) {
 			if (side == 1)
 				r1BtnEdit.setEnabled(false);
 			else
 				r2BtnEdit.setEnabled(false);
-		}
+		//}
 	}
 
 	public boolean setComboBoxSelectedItem(int side, String key) {
@@ -232,8 +231,8 @@ public class UserInterface {
 		r1SubMenu1.setLayout(new BoxLayout(r1SubMenu1, BoxLayout.X_AXIS));
 
 		r1ComboBox = new JComboBox<>();// values
-		r1ComboBox.setModel(
-				new DefaultComboBoxModel<String>(new String[] { "GR/ER", "AF", "AFD", "AFD_Min", "AFD_Comp" }));
+		r1ComboBox
+				.setModel(new DefaultComboBoxModel<String>(new String[] { "ER", "AF", "AFD", "AFD_Min", "AFD_Comp" }));
 		r1ComboBox.setEnabled(false);
 		r1ComboBox.addItemListener(rp1Listener);
 		r1SubMenu1.add(r1ComboBox);
@@ -270,8 +269,8 @@ public class UserInterface {
 		r2SubMenu1.setLayout(new BoxLayout(r2SubMenu1, BoxLayout.X_AXIS));
 
 		r2ComboBox = new JComboBox<>();// values
-		r2ComboBox.setModel(
-				new DefaultComboBoxModel<String>(new String[] { "GR/ER", "AF", "AFD", "AFD_Min", "AFD_Comp" }));
+		r2ComboBox
+				.setModel(new DefaultComboBoxModel<String>(new String[] { "ER", "AF", "AFD", "AFD_Min", "AFD_Comp" }));
 		r2ComboBox.setEnabled(false);
 		r2ComboBox.addItemListener(rp2Listener);
 		r2SubMenu1.add(r2ComboBox);
@@ -423,14 +422,14 @@ public class UserInterface {
 			try {
 				switch (cmd) {
 				case "Edit":
-					Regular reg = main.getRegular(side, "GR/ER");
-					int type = reg.ehGramatica() ? 0 : 1;
+					Regular reg = main.getRegular(side, "ER");
+					int type = reg.ehAutomato() ? 0 : 1;
 					new NovoAFouER(frame, main, type, side, reg.titulo(), reg.toString());
 					break;
 				case "Del":
-					int op = JOptionPane.showConfirmDialog(frame, "Voce tem certeza que deseja deletar esta GR/ER?");
+					int op = JOptionPane.showConfirmDialog(frame, "Voce tem certeza que deseja deletar esta AF/ER?");
 					if (op == 0)
-						main.deleteGrEr(side);
+						main.deleteAfEr(side);
 					break;
 				}
 			} catch (Exception exc) {
