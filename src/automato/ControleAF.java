@@ -106,18 +106,17 @@ public class ControleAF {
 	 * Funcao que determiniza, caso necessario, o AF dado e retorna seu
 	 * complemento.
 	 * 
-	 * @param estado
+	 * @param automato
 	 *            AF base para a operacao de complemento.
 	 * @return AFD Complementado equivalente ao AF dado.
 	 */
-	public static Automato complemento(Automato estado) {
+	public static Automato complemento(Automato automato) {
 
 		Automato comp;
-		
-		if (!estado.extras().contains("AFD"))
-			comp = determinizacao(estado);
+		if (!automato.extras().contains("AFD"))
+			comp = determinizacao(automato);
 		else
-			comp = new Automato(estado);
+			comp = new Automato(automato);
 
 		comp = completar(comp);
 		comp.definirEstadosFinais(comp.obterEstadosNaoFinais());

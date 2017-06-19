@@ -27,7 +27,7 @@ public class Main {
 	private ArrayList<HashMap<String, RightContent>> panels;
 	// 'cache' contendo as Grs/Ers altualmente no programa
 	private HashMap<String, Regular> regulares;
-	// classe para interação com banco de dados
+	// classe para interacao com banco de dados
 	private RegularDao dao;
 
 	public static void main(String[] args) {
@@ -410,7 +410,7 @@ public class Main {
 		}
 
 		Automato afnd = (Automato) getRegular(side, "AF");
-		System.out.println(afnd.alfabeto());
+
 		setRightContent(side, "AFD", ControleAF.determinizacao(afnd), false);
 
 		if (updateExtras) {

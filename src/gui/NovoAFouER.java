@@ -232,6 +232,7 @@ public class NovoAFouER extends JDialog implements ActionListener {
 						}
 					}
 					automato.titulo(tfTitulo.getText());
+					automato.extras("");
 					main.addAfEr(type, side, tfTitulo.getText(), automato);
 				}
 

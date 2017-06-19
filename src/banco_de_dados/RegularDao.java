@@ -31,8 +31,6 @@ public class RegularDao extends Dao {
 
 	public void editarRegular(Regular r) throws Exception {
 
-		if (r.isDumbGrEr())
-			return;
 
 		HashMap<String, String> dados = new HashMap<>();
 		if (r.ehAutomato())
@@ -49,8 +47,6 @@ public class RegularDao extends Dao {
 
 	public void definirExtras(Regular r) throws Exception {
 
-		if (r.isDumbGrEr())
-			return;
 
 		HashMap<String, String> dados = new HashMap<>();
 		dados.put("extras", r.extras());
