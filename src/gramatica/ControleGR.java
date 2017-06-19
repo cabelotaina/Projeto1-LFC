@@ -71,13 +71,13 @@ public abstract class ControleGR {
 		
 		Estado estado_final = new Estado("FINAL");
 		af.adicionarEstado(estado_final);
-		af.estadoFinal(estado_final);
+		af.adicionarEstadoFinal(estado_final);
 
 		for(String vn : gramatica.obterVn()){
 			Estado s = new Estado(vn);
 			af.adicionarEstado(s);
 			if(vn.equals(gramatica.obterSimboloInicial()))
-				af.estadoInicial(s);
+				af.adicionarEstadoInicial(s);
 			
 			for(Producao p : gramatica.obterProducoes(vn)){
 				if(p.obterProximo().equals("$"))
@@ -86,7 +86,7 @@ public abstract class ControleGR {
 					af.adicionarTransicao(s, p.obterSimbolo(), new Estado(p.obterProximo()));
 				
 				if(vn.equals(gramatica.obterSimboloInicial()) && p.obterSimbolo() == '&')
-					af.estadoFinal(s);
+					af.adicionarEstadoFinal(s);
 			}
 		}
 		af.ordenarEstados();

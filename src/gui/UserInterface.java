@@ -80,7 +80,7 @@ public class UserInterface {
 		panel.setVisible(true);
 	}
 
-	private int chooseSide() {
+	private int escolhaOlado() {
 		Object[] options = { "Lado 1", "Lado 2" };
 		String msg = "Qual lado voc\u00EA gostaria de usar para esta opera\u00E7\u00E3o?";
 
@@ -310,7 +310,7 @@ public class UserInterface {
 			public void mouseClicked(MouseEvent evt) {
 				JList list = (JList) evt.getSource();
 				if (evt.getClickCount() == 2) {
-					int side = chooseSide() + 1;
+					int side = escolhaOlado() + 1;
 					if (side != 0)
 						main.showRightContent(side, (String) list.getSelectedValue());
 				}
@@ -331,11 +331,11 @@ public class UserInterface {
 		private UserInterface ui;
 		// variavel usada para o usuario nao poder
 		// executar duas operaçoes ao mesmo tempo
-		private boolean isDoingSomething;
+		private boolean estaFazendoAlgumaCoisa;
 
 		public MenuListener(UserInterface ui) {
 			this.ui = ui;
-			this.isDoingSomething = false;
+			this.estaFazendoAlgumaCoisa = false;
 		}
 
 		private boolean isBinOp(String cmd) {
@@ -346,19 +346,19 @@ public class UserInterface {
 		public void actionPerformed(ActionEvent e) {
 			String cmd = e.getActionCommand();
 
-			if (this.isDoingSomething)
+			if (this.estaFazendoAlgumaCoisa)
 				return;
 
-			this.isDoingSomething = true;
+			this.estaFazendoAlgumaCoisa = true;
 
 			int side = -1;
 			if (!isBinOp(cmd)) {
-				side = chooseSide() + 1;
+				side = escolhaOlado() + 1;
 				if (side == 0) { // usuario fechou a janela
-					this.isDoingSomething = false;
+					this.estaFazendoAlgumaCoisa = false;
 					return;
 				}
-			} else if (!main.haveTwoAFs()) {
+			} else if (!main.temDoisAutomatos()) {
 				JOptionPane.showMessageDialog(ui.getFrame(), "Esta opera\u00E7\u00E3o requer duas GR/ER.");
 			}
 
@@ -393,7 +393,7 @@ public class UserInterface {
 			} catch (Exception exc) {
 				exc.printStackTrace();
 			}
-			this.isDoingSomething = false;
+			this.estaFazendoAlgumaCoisa = false;
 		}
 	}
 

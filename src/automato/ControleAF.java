@@ -82,12 +82,12 @@ public class ControleAF {
 
 		automato_fd.adicionarEstado(atual);
 		if (primeira) // seta o 1* estado como estadoInicial
-			automato_fd.estadoInicial(atual);
+			automato_fd.adicionarEstadoInicial(atual);
 
 		for (Estado estado : estados)
 			if (automato.ehEstadoFinal(estado)) // verifica se contem estado
 												// final
-				automato_fd.estadoFinal(atual);
+				automato_fd.adicionarEstadoFinal(atual);
 
 		for (char simbolo : automato_fd.alfabeto()) {
 			for (Estado estado : estados)
@@ -233,9 +233,9 @@ public class ControleAF {
 			minimo.adicionarEstado(s);
 			for (Estado s2 : estados.get(s)) {
 				if (afd.ehEstadoFinal(s2))
-					minimo.estadoFinal(s);
+					minimo.adicionarEstadoFinal(s);
 				if (afd.estadoInicial().equals(s2))
-					minimo.estadoInicial(s);
+					minimo.adicionarEstadoInicial(s);
 			}
 		}
 
@@ -384,7 +384,7 @@ public class ControleAF {
 		Automato vazio = new Automato(alfabeto);
 		Estado estado = new Estado("S");
 		vazio.adicionarEstado(estado);
-		vazio.estadoInicial(estado);
+		vazio.adicionarEstadoInicial(estado);
 		vazio.extras("AFD|AFD_Min|Vazio");
 		return vazio;
 	}
@@ -539,14 +539,14 @@ public class ControleAF {
 
 		Estado newQ0 = new Estado("Q03");
 		union.adicionarEstado(newQ0);
-		union.estadoInicial(newQ0);
+		union.adicionarEstadoInicial(newQ0);
 		if (afd1.ehEstadoFinal(afd1.estadoInicial()) || afd2.ehEstadoFinal(afd2.estadoInicial()))
-			union.estadoFinal(newQ0);
+			union.adicionarEstadoFinal(newQ0);
 
-		union.addStates(afd1.estados());
-		union.addStates(afd2.estados());
-		union.adicinarEstadosFinais(afd1.estadosFinais());
-		union.adicinarEstadosFinais(afd2.estadosFinais());
+		union.adicionarEstados(afd1.estados());
+		union.adicionarEstados(afd2.estados());
+		union.adicionarEstadosFinais(afd1.estadosFinais());
+		union.adicionarEstadosFinais(afd2.estadosFinais());
 		union.adicionarTransicoes(afd1.transicoes());
 		union.adicionarTransicoes(afd2.transicoes());
 
@@ -558,50 +558,79 @@ public class ControleAF {
 	}
 
 	public static Regular definirAutomato(String tmpTitulo, String transicoesString) {
-		// System.out.println(transicoes);
-		String[] parts = transicoesString.split("},");
-		ArrayList<Estado> estados = new ArrayList<>();
+
+		//System.out.println(transicoesString);
+
 		Automato automato = new Automato();
-		String estadoInicial;
-		ArrayList<Character> alfabeto = new ArrayList<>();
-		Transicoes transicoes = new Transicoes();
-		for (String item : parts) {
-			String[] is = item.split("=\\{");
-			for (int i = 0; i < is.length; i++) {
-				Estado atual = new Estado("");
-				if (i % 2 == 0) {
-					String estado = is[i];
-					estado = estado.replace("{", "");
-					atual = new Estado(estado);
-					estados.add(atual);
-					if (i == 0)
-						estadoInicial = estado;
-					System.out.println(estado);
-				} else {
-					String[] simbolosEstados = is[i].split(",");
-					for (String simboloEstado : simbolosEstados) {
-						simboloEstado = simboloEstado.replace("}", "").replace(" ", "");
-						// System.out.println(simboloEstado);
-						String[] simboloEstadoAux = simboloEstado.split("=");
-						Character simbolo = 'º';
-						for (int j = 0; j < simboloEstadoAux.length; j++) {
-							if (i % 2 == 0) { // simbolos
-								simbolo = simboloEstadoAux[j].charAt(0);
-								alfabeto.add(simbolo);
-								System.out.println(simbolo);
-							} else if (simbolo != 'º' && atual.nome() != "") { // estado destino
-								Estado proximo = new Estado(simboloEstadoAux[j]);
-								transicoes.adicionarTransicao(atual, simbolo, proximo);
-								System.out.println(simboloEstadoAux[j]);
-							}
-						}
+		
+		String[] split = transicoesString.replace("*", "").replace("->", "").replace("{", "").replace("}", "")
+				.split(";");
+		for (String s : split) {
+			String[] aux = s.split("=");
+			String[] preSimbolo = aux[1].split(",");
+			Character simbolo = preSimbolo[0].charAt(0);
+			automato.adicionarSimbolo(simbolo);
+		}
 
-					}
-				}
+		//System.out.println("Alfabeto: " + automato.alfabeto());
 
+		split = transicoesString.split("->");
+		String estadoInicialLabel = split[1].replace("*", "").split("=")[0];
+		
+		Estado estadoInicial = new Estado(estadoInicialLabel);
+		automato.adicionarEstadoInicial(estadoInicial);
+		
+		//System.out.println("Estado Inicial: " + automato.estadoInicial());
+
+		String[] estadosLabel = transicoesString.replace("{", "").replace("}", "").replace("->", "").replace("*", "")
+				.replace("\\s", "").replace("[", "").replace("]","").split(";");
+
+		for (String e : estadosLabel) {
+			String es = e.split("=")[0];
+			automato.adicionarEstado(new Estado(es));
+		}	
+
+		//System.out.println("Estados: " + automato.estados());
+
+		String[] estadosFinaisLabel = transicoesString.replace("{", "").replace("}", "").replace("->", "")
+				.replace("\\s", "").replace("[", "").replace("]","").split(";");
+
+		for (String ef : estadosFinaisLabel) {
+			if (ef.contains("*")) {
+				ef = ef.replace("*", "").split("=")[0];
+				automato.adicionarEstadoFinal(new Estado(ef));
 			}
 		}
 
-		return null;
+		//System.out.println("Estados Finais: " + automato.estadosFinais());
+
+		//System.out.println("Transições");
+
+		String[] transicoesLabel = transicoesString.replace("{", "").replace("}", "").replace("->", "")
+				.replace("->", "").replace("\\s", "").replace("*", "").replace("[", "").replace("]","").split(";");
+
+		for (String t : transicoesLabel) {
+			String[] par = t.split("=");
+			// estado
+			Estado corrente = new Estado(par[0]);
+
+			// simbolo e destino
+
+			String[] simboloDestino = par[1].split(",");
+
+			Character simbolo = simboloDestino[0].charAt(0);
+			//System.out.println("Simbolo: " + simbolo);
+
+			Estado destino = new Estado(simboloDestino[1]);
+
+			automato.adicionarTransicao(corrente, simbolo,destino);
+
+		}
+
+		//System.out.println(automato.transicoes());
+
+		//System.out.println(automato.transicoesString());
+
+		return automato;
 	}
 }

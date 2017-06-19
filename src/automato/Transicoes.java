@@ -70,11 +70,11 @@ public class Transicoes {
 		}
 	}
 	
-	public void removerTransicaoPorEstado(Estado s){
-		transicoes.remove(s);
-		for(Estado s2 : transicoes.keySet())
-			for(char c : transicoes.get(s2).keySet())
-				transicoes.get(s2).get(c).remove(s);
+	public void removerTransicaoPorEstado(Estado estado){
+		transicoes.remove(estado);
+		for(Estado estado2 : transicoes.keySet())
+			for(char simbolo : transicoes.get(estado2).keySet())
+				transicoes.get(estado2).get(simbolo).remove(estado);
 	}
 	
 	/**
@@ -82,16 +82,16 @@ public class Transicoes {
 	 * para irem para o estado sNew. Função utilizada
 	 * pelo algoritmo De Simone.
 	 * 
-	 * @param sOld		Estado antigo que se quer eliminar as 
+	 * @param antiga	Estado antigo que se quer eliminar as 
 	 * 					transições que levam a ele.
-	 * @param sNew		Estado novo que se quer que as transições
+	 * @param nova		Estado novo que se quer que as transições
 	 * 					cheguem nele.
 	 */
-	public void transicaoParaProximoEstado(Estado sOld, Estado sNew){
-		for(Estado key : transicoes.keySet()){
-			for(char c : transicoes.get(key).keySet()){
-				if(transicoes.get(key).get(c).remove(sOld))
-					transicoes.get(key).get(c).add(sNew);
+	public void transicaoParaProximoEstado(Estado antiga, Estado nova){
+		for(Estado chave : transicoes.keySet()){
+			for(char simbolo : transicoes.get(chave).keySet()){
+				if(transicoes.get(chave).get(simbolo).remove(antiga))
+					transicoes.get(chave).get(simbolo).add(nova);
 			}
 		}
 	}
@@ -103,5 +103,17 @@ public class Transicoes {
 	@Override
 	public String toString() {
 		return transicoes.toString();
+	}
+
+	public ArrayList<String> obterTransicoesSeparadas() {
+		ArrayList<String> separadas = new ArrayList<>();
+		for(Estado chave : transicoes.keySet()){
+			for(char simbolo : transicoes.get(chave).keySet()){
+					separadas.add(chave.toString()+
+							"={"+simbolo+","+
+							transicoes.get(chave).get(simbolo).toString()+"}");
+			}
+		}
+		return separadas;
 	}
 }

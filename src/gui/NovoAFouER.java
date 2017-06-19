@@ -179,7 +179,7 @@ public class NovoAFouER extends JDialog implements ActionListener {
 					}
 
 					Automato automato = new Automato();
-					automato.definirAlfabeto(alfabeto);
+					automato.adicionarAlfabeto(alfabeto);
 
 					for (int i = 0; i < modeloDaTabela.getRowCount(); i++) {
 
@@ -202,14 +202,14 @@ public class NovoAFouER extends JDialog implements ActionListener {
 							if (nomeDoEstadoAtual != null && !nomeDoEstadoAtual.isEmpty()) {
 								if (nomeDoEstadoAtual.contains("*") && nomeDoEstadoAtual.contains("->")) {
 									automato.adicionarEstado(atual);
-									automato.estadoInicial(atual);
-									automato.estadoFinal(atual);
+									automato.adicionarEstadoInicial(atual);
+									automato.adicionarEstadoFinal(atual);
 								} else if (nomeDoEstadoAtual.contains("->")) {
 									automato.adicionarEstado(atual);
-									automato.estadoInicial(atual);
+									automato.adicionarEstadoInicial(atual);
 								} else if (nomeDoEstadoAtual.contains("*")) {
 									automato.adicionarEstado(atual);
-									automato.estadoFinal(atual);
+									automato.adicionarEstadoFinal(atual);
 								} else {
 									automato.adicionarEstado(atual);
 								}

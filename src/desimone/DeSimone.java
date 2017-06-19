@@ -28,7 +28,7 @@ public abstract class DeSimone {
 			af.adicionarSimbolo(n.getC());
 		
 		Estado sTmp = new Estado("Q0");
-			af.estadoInicial(sTmp);
+			af.adicionarEstadoInicial(sTmp);
 		ComposicaoEstados cState = new ComposicaoEstados(sTmp);
 			cState.addNode(tree.getRoot());
 		
@@ -81,7 +81,7 @@ public abstract class DeSimone {
 				if(n.getC() != '$')
 					newStates.get(n.getC()).add(new Estado("Q"+n.getNumero()));
 				else
-					af.estadoFinal(sTmp.getState());
+					af.adicionarEstadoFinal(sTmp.getState());
 			}
 			
 			ComposicaoEstados nState;
