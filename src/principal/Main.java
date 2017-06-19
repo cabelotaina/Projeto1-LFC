@@ -181,7 +181,7 @@ public class Main {
 	 * @throws Exception
 	 *             Caso haja um erro vindo do banco de dados.
 	 */
-	public void addGrEr(int type, int side, String titulo, Object reg) throws Exception {
+	public void addAfEr(int type, int side, String titulo, Object reg) throws Exception {
 		Regular regular = null;
 
 		if (titulo == null || titulo.equals(""))

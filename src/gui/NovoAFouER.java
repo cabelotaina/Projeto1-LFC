@@ -26,7 +26,7 @@ import principal.Main;
 import principal.WarningException;
 
 /**
- * Interface para adicionar e editar GRs e ERs.
+ * Interface para adicionar e editar AFs e ERs.
  * 
  * @author Maurilio Atila
  * @author Wilian Kraemmer
@@ -78,9 +78,9 @@ public class NovoAFouER extends JDialog implements ActionListener {
 	 * Initialize the contents of the frame.
 	 * 
 	 * @param titulo
-	 *            titulo da G.R/E.R
+	 *            titulo da A.F/E.R
 	 * @param reg
-	 *            G.R ou E.R para ser editada
+	 *            A.F ou E.R para ser editada
 	 */
 	private void initialize(String titulo, String reg) {
 		this.setAlwaysOnTop(true);
@@ -164,7 +164,7 @@ public class NovoAFouER extends JDialog implements ActionListener {
 			else { // leitura de tabela de automato
 
 				if (this.type == ER) {
-					main.addGrEr(type, side, tfTitulo.getText(), textArea.getText());
+					main.addAfEr(type, side, tfTitulo.getText(), textArea.getText());
 				} else if (this.type == AF) {
 
 					DefaultTableModel modeloDaTabela = (DefaultTableModel) tabela.getModel();
@@ -230,7 +230,7 @@ public class NovoAFouER extends JDialog implements ActionListener {
 						}
 					}
 					automato.titulo(tfTitulo.getText());
-					main.addGrEr(type, side, tfTitulo.getText(), automato);
+					main.addAfEr(type, side, tfTitulo.getText(), automato);
 				}
 
 			}

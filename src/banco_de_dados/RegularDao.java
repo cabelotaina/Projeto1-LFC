@@ -34,7 +34,7 @@ public class RegularDao extends Dao {
 
 	public void editarRegular(Regular r) throws Exception {
 		// if (r.ehAutomato()) {
-		// System.out.println("2RegularDao > Soh eh possivel adicionar GRs ou
+		// System.out.println("2RegularDao > Soh eh possivel adicionar AFs ou
 		// ERs!");
 		// return;
 		// } else

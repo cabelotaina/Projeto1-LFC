@@ -47,7 +47,7 @@ public class ControleAF {
 		afd.removerSimbolo('&'); // apos calcular os &-fechos ja pode tirar o &
 									// do alfabeto
 
-		recDeterminize(automato, afd, fechos, fechos.get(automato.estadoInicial()), true);
+		determinizacaoRecursiva(automato, afd, fechos, fechos.get(automato.estadoInicial()), true);
 
 		afd.extra("AFD");
 
@@ -69,8 +69,8 @@ public class ControleAF {
 	 * @param primeira
 	 *            Eh a primeira execucao da funcao recursiva?
 	 */
-	private static void recDeterminize(Automato automato, Automato automato_fd, HashMap<Estado, Set<Estado>> fechos,
-			Set<Estado> estados, boolean primeira) {
+	private static void determinizacaoRecursiva(Automato automato, Automato automato_fd, 
+			HashMap<Estado, Set<Estado>> fechos, Set<Estado> estados, boolean primeira) {
 
 		Estado atual = new Estado(estados.toString());
 
@@ -103,7 +103,7 @@ public class ControleAF {
 		}
 
 		for (Set<Estado> estados_para_adicionar : ultimaAdicao)
-			recDeterminize(automato, automato_fd, fechos, estados_para_adicionar, false);
+			determinizacaoRecursiva(automato, automato_fd, fechos, estados_para_adicionar, false);
 	}
 
 	/**
@@ -390,71 +390,12 @@ public class ControleAF {
 	}
 
 	/**
-	 * Função que determiniza, caso necessario, o AF dado e o utiliza para fazer
-	 * uma busca de padrão no texto dado.
-	 * 
-	 * @param txt
-	 *            Texto que se quer fazer a busca de padrão.
-	 * @param af
-	 *            AF que sera utilizado.
-	 * @param determinizado
-	 *            AF ja esta determinizado?
-	 * @return Lista com todas as palavras achadas no texto usando o AFD dado.
-	 */
-	public static ArrayList<String> search(String txt, Automato af, boolean determinizado) {
-		if (!determinizado)
-			af = determinizacao(new Automato(af));
-
-		ArrayList<String> result = new ArrayList<>();
-		ArrayList<Estado> tmp;
-
-		Estado atual = af.estadoInicial();
-		char c;
-		String found = "";
-
-		txt += "$";// simbolo para final do texto
-
-		if (af.ehEstadoFinal(atual))
-			result.add("&");
-
-		for (int i = 0; i < txt.length(); i++) {
-			c = txt.charAt(i);
-			found += c;
-			tmp = af.obterProximosEstados(atual, c);
-			if (!tmp.isEmpty()) {
-				atual = tmp.get(0);
-				if (af.ehEstadoFinal(atual))
-					result.add(found);
-
-				for (int k = i + 1; k < txt.length(); k++) {
-					c = txt.charAt(k);
-					found += c;
-					tmp = af.obterProximosEstados(atual, c);
-					if (!tmp.isEmpty()) {
-						atual = tmp.get(0);
-						if (af.ehEstadoFinal(atual))
-							result.add(found);
-					} else {
-						found = "";
-						break;
-					}
-				}
-			} else
-				found = "";
-
-			atual = af.estadoInicial();
-		}
-
-		return result;
-	}
-
-	/**
-	 * Função que compara dois AFs dados.
+	 * Funcao que compara dois AFs dados.
 	 * 
 	 * @param afd1
-	 *            AF usado para comparação.
+	 *            AF usado para comparacao.
 	 * @param afd2
-	 *            AF usado para comparação.
+	 *            AF usado para comparacao.
 	 * @return TRUE caso os dois AFs sejam equivalentes.
 	 */
 	public static boolean compare(Automato afd1, Automato afd2) {
