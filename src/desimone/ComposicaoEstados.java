@@ -14,38 +14,38 @@ import automato.Estado;
  */
 public class ComposicaoEstados {
 	
-	private Estado state;
-	private ArrayList<No> composition;
+	private Estado estado;
+	private ArrayList<No> composicao;
 	
 	public ComposicaoEstados(Estado state) {
 		this(state, new ArrayList<>());
 	}
 
 	public ComposicaoEstados(Estado state, ArrayList<No> composition) {
-		this.state = state;
-		this.composition = composition;
+		this.estado = state;
+		this.composicao = composition;
 	}
 	
 	// State
-	public Estado getState() {
-		return state;
+	public Estado obterEstado() {
+		return estado;
 	}
 
-	public void setState(Estado state) {
-		this.state = state;
+	public void definirEstado(Estado state) {
+		this.estado = state;
 	}
 
 	// Composition
-	public ArrayList<No> getComposition() {
-		return composition;
+	public ArrayList<No> obterComposicao() {
+		return composicao;
 	}
 
-	public void setComposition(ArrayList<No> composition) {
-		this.composition = composition;
+	public void definirComposicao(ArrayList<No> composition) {
+		this.composicao = composition;
 	}
 	
-	public void addNode(No n){
-		this.composition.add(n);
+	public void adicionarNo(No n){
+		this.composicao.add(n);
 	}
 
 	@Override
@@ -53,8 +53,8 @@ public class ComposicaoEstados {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
-				+ ((composition == null) ? 0 : composition.hashCode());
-		result = prime * result + ((state == null) ? 0 : state.hashCode());
+				+ ((composicao == null) ? 0 : composicao.hashCode());
+		result = prime * result + ((estado == null) ? 0 : estado.hashCode());
 		return result;
 	}
 
@@ -67,15 +67,15 @@ public class ComposicaoEstados {
 		if (getClass() != obj.getClass())
 			return false;
 		ComposicaoEstados other = (ComposicaoEstados) obj;
-		if (composition == null) {
-			if (other.composition != null)
+		if (composicao == null) {
+			if (other.composicao != null)
 				return false;
-		} else if (!composition.equals(other.composition))
+		} else if (!composicao.equals(other.composicao))
 			return false;
-		if (state == null) {
-			if (other.state != null)
+		if (estado == null) {
+			if (other.estado != null)
 				return false;
-		} else if (!state.equals(other.state))
+		} else if (!estado.equals(other.estado))
 			return false;
 		return true;
 	}

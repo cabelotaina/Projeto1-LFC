@@ -7,9 +7,7 @@ import java.util.Set;
 
 import expressao_regular.ExpressaoRegular;
 import expressao_regular.ControleER;
-import gramatica.Gramatica;
 import principal.Regular;
-import gramatica.ControleGR;
 
 public class ControleAF {
 
@@ -21,9 +19,7 @@ public class ControleAF {
 	 * @return AF criado.
 	 */
 	public static Automato criarAutomato(Regular regular) {
-		if (regular.ehGramatica())
-			return ControleGR.criarAutomato((Gramatica) regular);
-		else if (regular.ehExpressaoRegular())
+		if (regular.ehExpressaoRegular())
 			return ControleER.criarAutomato((ExpressaoRegular) regular);
 		else
 			return (Automato) regular;
@@ -69,7 +65,7 @@ public class ControleAF {
 	 * @param primeira
 	 *            Eh a primeira execucao da funcao recursiva?
 	 */
-	private static void determinizacaoRecursiva(Automato automato, Automato automato_fd, 
+	private static void determinizacaoRecursiva(Automato automato, Automato automato_fd,
 			HashMap<Estado, Set<Estado>> fechos, Set<Estado> estados, boolean primeira) {
 
 		Estado atual = new Estado(estados.toString());
@@ -245,7 +241,7 @@ public class ControleAF {
 				nSet = numeroConjuntoEquivalencia(conjuntosDeEquivalencia,
 						afd.obterProximosEstados(estadosTmp, c).get(0));
 				if (nSet != -1) {
-					tmpEstado2 = minimo.getState("Q" + nSet);
+					tmpEstado2 = minimo.obterEstado("Q" + nSet);
 					if (tmpEstado2 != null)
 						minimo.adicionarTransicao(s, c, tmpEstado2);
 				}
@@ -498,13 +494,13 @@ public class ControleAF {
 		return union;
 	}
 
-	public static Regular definirAutomato(String tmpTitulo, String transicoesString) {
+	public static Regular definirAutomato(String titulo, String reg) {
 
-		//System.out.println(transicoesString);
+		// System.out.println(transicoesString);
 
 		Automato automato = new Automato();
-		
-		String[] split = transicoesString.replace("*", "").replace("->", "").replace("{", "").replace("}", "")
+
+		String[] split = reg.replace("*", "").replace("->", "").replace("{", "").replace("}", "")
 				.split(";");
 		for (String s : split) {
 			String[] aux = s.split("=");
@@ -513,28 +509,28 @@ public class ControleAF {
 			automato.adicionarSimbolo(simbolo);
 		}
 
-		//System.out.println("Alfabeto: " + automato.alfabeto());
+		// System.out.println("Alfabeto: " + automato.alfabeto());
 
-		split = transicoesString.split("->");
+		split = reg.split("->");
 		String estadoInicialLabel = split[1].replace("*", "").split("=")[0];
-		
+
 		Estado estadoInicial = new Estado(estadoInicialLabel);
 		automato.adicionarEstadoInicial(estadoInicial);
-		
-		//System.out.println("Estado Inicial: " + automato.estadoInicial());
 
-		String[] estadosLabel = transicoesString.replace("{", "").replace("}", "").replace("->", "").replace("*", "")
-				.replace("\\s", "").replace("[", "").replace("]","").split(";");
+		// System.out.println("Estado Inicial: " + automato.estadoInicial());
+
+		String[] estadosLabel = reg.replace("{", "").replace("}", "").replace("->", "").replace("*", "")
+				.replace("\\s", "").replace("[", "").replace("]", "").split(";");
 
 		for (String e : estadosLabel) {
 			String es = e.split("=")[0];
 			automato.adicionarEstado(new Estado(es));
-		}	
+		}
 
-		//System.out.println("Estados: " + automato.estados());
+		// System.out.println("Estados: " + automato.estados());
 
-		String[] estadosFinaisLabel = transicoesString.replace("{", "").replace("}", "").replace("->", "")
-				.replace("\\s", "").replace("[", "").replace("]","").split(";");
+		String[] estadosFinaisLabel = reg.replace("{", "").replace("}", "").replace("->", "")
+				.replace("\\s", "").replace("[", "").replace("]", "").split(";");
 
 		for (String ef : estadosFinaisLabel) {
 			if (ef.contains("*")) {
@@ -543,12 +539,12 @@ public class ControleAF {
 			}
 		}
 
-		//System.out.println("Estados Finais: " + automato.estadosFinais());
+		// System.out.println("Estados Finais: " + automato.estadosFinais());
 
-		//System.out.println("Transições");
+		// System.out.println("Transições");
 
-		String[] transicoesLabel = transicoesString.replace("{", "").replace("}", "").replace("->", "")
-				.replace("->", "").replace("\\s", "").replace("*", "").replace("[", "").replace("]","").split(";");
+		String[] transicoesLabel = reg.replace("{", "").replace("}", "").replace("->", "")
+				.replace("->", "").replace("\\s", "").replace("*", "").replace("[", "").replace("]", "").split(";");
 
 		for (String t : transicoesLabel) {
 			String[] par = t.split("=");
@@ -560,17 +556,17 @@ public class ControleAF {
 			String[] simboloDestino = par[1].split(",");
 
 			Character simbolo = simboloDestino[0].charAt(0);
-			//System.out.println("Simbolo: " + simbolo);
+			// System.out.println("Simbolo: " + simbolo);
 
 			Estado destino = new Estado(simboloDestino[1]);
 
-			automato.adicionarTransicao(corrente, simbolo,destino);
+			automato.adicionarTransicao(corrente, simbolo, destino);
 
 		}
 
-		//System.out.println(automato.transicoes());
+		// System.out.println(automato.transicoes());
 
-		//System.out.println(automato.transicoesString());
+		// System.out.println(automato.transicoesString());
 
 		return automato;
 	}

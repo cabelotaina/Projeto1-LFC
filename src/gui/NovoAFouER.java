@@ -86,7 +86,7 @@ public class NovoAFouER extends JDialog implements ActionListener {
 		this.setAlwaysOnTop(true);
 		this.setType(Type.UTILITY);
 		this.setResizable(false);
-		this.setTitle("Adicionar GR/ER");
+		this.setTitle("Adicionar AF/ER");
 		this.setSize(333, 339);
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.getContentPane().setLayout(new BorderLayout(0, 0));
@@ -146,7 +146,7 @@ public class NovoAFouER extends JDialog implements ActionListener {
 		}
 
 		if (isEdit) {
-			this.setTitle("Editar GR/ER");
+			this.setTitle("Editar AF/ER");
 			textArea.setText(reg);
 			tfTitulo.setText(titulo);
 			tfTitulo.setEnabled(false);

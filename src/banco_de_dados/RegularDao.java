@@ -8,7 +8,6 @@ import automato.Automato;
 import automato.ControleAF;
 import expressao_regular.ControleER;
 import expressao_regular.ExpressaoRegular;
-import gramatica.Gramatica;
 import principal.Regular;
 
 public class RegularDao extends Dao {
@@ -18,7 +17,7 @@ public class RegularDao extends Dao {
 	}
 
 	public void adicionarRegular(Regular r) throws Exception {
-		if (r.isDumbGrEr())// interseções não vão ser salvas no DB
+		if (r.isDumbGrEr())// intersecoes nao vao ser salvas no DB
 			return;
 
 		HashMap<String, String> dados = new HashMap<>();
@@ -33,18 +32,14 @@ public class RegularDao extends Dao {
 	}
 
 	public void editarRegular(Regular r) throws Exception {
-		// if (r.ehAutomato()) {
-		// System.out.println("2RegularDao > Soh eh possivel adicionar AFs ou
-		// ERs!");
-		// return;
-		// } else
 
-		if (r.isDumbGrEr())// intersecções não vão ser salvas no DB
+
+		if (r.isDumbGrEr())
 			return;
 
 		HashMap<String, String> dados = new HashMap<>();
-		if (r.ehGramatica())
-			dados.put("gr_er", ((Gramatica) r).obterGramatica());
+		if (r.ehAutomato())
+			dados.put("gr_er", ((Automato) r).transicoesString());
 		else
 			dados.put("gr_er", ((ExpressaoRegular) r).obterExpressaoRegular());
 		dados.put("extras", r.extras());
@@ -56,13 +51,8 @@ public class RegularDao extends Dao {
 	}
 
 	public void definirExtras(Regular r) throws Exception {
-		// if (r.ehAutomato()) {
-		// System.out.println("3RegularDao > Soh eh possivel adicionar GRs ou
-		// ERs!");
-		// return;
-		// } else
-		// TODO: apenas permitindo definir extras	
-		if (r.isDumbGrEr())// intersecções não vão ser salvas no DB
+
+		if (r.isDumbGrEr())
 			return;
 
 		HashMap<String, String> dados = new HashMap<>();
@@ -75,14 +65,8 @@ public class RegularDao extends Dao {
 	}
 
 	public void removeRegular(Regular r) throws Exception {
-		// if(r.ehAutomato()){
-		// System.out.println("4RegularDao > Soh eh possivel adicionar GRs ou
-		// ERs!");
-		// return;
-		// }else
-		// TODO: vendo como fica se permitimos deletar AF
 
-		if (r.isDumbGrEr())// intersecções não vão ser salvas no DB
+		if (r.isDumbGrEr())
 			return;
 
 		HashMap<String, String> where = new HashMap<>();

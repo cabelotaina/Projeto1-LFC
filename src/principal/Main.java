@@ -8,8 +8,6 @@ import automato.ControleAF;
 import banco_de_dados.RegularDao;
 import desimone.DeSimone;
 import expressao_regular.ControleER;
-import gramatica.ControleGR;
-import gramatica.Gramatica;
 import gui.RightContent;
 import gui.ShowAF;
 import gui.UserInterface;
@@ -97,7 +95,7 @@ public class Main {
 	 */
 	private void initHashs() {
 		HashMap<String, RightContent> l1 = new HashMap<>();
-		l1.put("GR/ER", new RightContent());
+		l1.put("AF/ER", new RightContent());
 		l1.put("AF", new RightContent());
 		l1.put("AFD", new RightContent());
 		l1.put("AFD_Min", new RightContent());
@@ -106,7 +104,7 @@ public class Main {
 		panels.add(l1);
 
 		HashMap<String, RightContent> l2 = new HashMap<>();
-		l2.put("GR/ER", new RightContent());
+		l2.put("AF/ER", new RightContent());
 		l2.put("AF", new RightContent());
 		l2.put("AFD", new RightContent());
 		l2.put("AFD_Min", new RightContent());
@@ -121,7 +119,7 @@ public class Main {
 	 * @param side
 	 *            Qual lado? 1 ou 2.
 	 * @param key
-	 *            Qual 'key'? GR/ER, AF, AFD, AFD_Min, AFD_Comp.
+	 *            Qual 'key'? AF/ER, AF, AFD, AFD_Min, AFD_Comp.
 	 * @return Retorna o 'conjunto' regular.
 	 */
 	public Regular getRegular(int side, String key) {
@@ -136,7 +134,7 @@ public class Main {
 	 */
 	private void cleanExtraPanels(int side) {
 		HashMap<String, RightContent> panel = panels.get(side - 1);
-		panel.get("GR/ER").setRegular(null);
+		panel.get("AF/ER").setRegular(null);
 		panel.get("AF").setRegular(null);
 		panel.get("AFD").setRegular(null);
 		panel.get("AFD_Min").setRegular(null);
@@ -150,34 +148,30 @@ public class Main {
 	 *            'Conjunto' Regular a ser adicionado.
 	 */
 	private void internalAddGrEr(Regular r) {
-		// System.out.println(r.titulo());
-		// if (r == null){
-		// return;
-		// }
-
-		// TODO quando não tiver mais nenhuma com null colocar isso para
-		// funcionar
+		 if (r == null){
+		 return;
+		 }
 
 		regulares.put(r.titulo(), r);
 		ui.addInTheList(r.titulo());
 	}
 
 	/**
-	 * Adicionada uma nova GR/ER passada pelo usuario.
+	 * Adicionada uma nova AF/ER passada pelo usuario.
 	 * 
 	 * @param type
-	 *            Qual o tipo do 'Conjunto' Regular? 0 = GR, 1 = ER.
+	 *            Qual o tipo do 'Conjunto' Regular? 0 = AF, 1 = ER.
 	 * @param side
 	 *            Qual lado? 1 ou 2.
 	 * @param titulo
 	 *            Titulo do novo 'Conjunto' Regular.
 	 * @param reg
-	 *            Gramatica ou Expressão regular a ser adicionada.
+	 *            Automato ou Expressao regular a ser adicionada.
 	 * 
 	 * @throws WarningException
-	 *             Caso ja exista uma Gr/Er com mesmo titulo.
+	 *             Caso ja exista uma Af/Er com mesmo titulo.
 	 * @throws WarningException
-	 *             Caso haja um erro com a Gr/Er entrada pelo usuario.
+	 *             Caso haja um erro com a Af/Er entrada pelo usuario.
 	 * @throws Exception
 	 *             Caso haja um erro vindo do banco de dados.
 	 */
@@ -187,14 +181,13 @@ public class Main {
 		if (titulo == null || titulo.equals(""))
 			throw new WarningException("Por favor entre com um titulo.");
 
-		titulo = (type == 0 ? "GR: " : "ER: ") + titulo;
+		titulo = (type == 0 ? "AF: " : "ER: ") + titulo;
 
 		if (regulares.containsKey(titulo)) // deixar substituir?
-			throw new WarningException("Ja existe uma " + (type == 0 ? "gramatica" : "express\u00E3o")
+			throw new WarningException("Ja existe uma " + (type == 0 ? "automato" : "express\u00E3o")
 					+ " com este titulo, por favor escolha outro.");
 
 		if (type == 0) {
-			// regular = ControleGR.definirGramatica(titulo, (String) reg);
 			regular = (Regular) reg;
 			regular.titulo(titulo);
 		} else if (type == 1) {
@@ -202,7 +195,7 @@ public class Main {
 		}
 
 		if (regular == null) {
-			throw new WarningException("Parece haver algum erro com sua " + (type == 0 ? "gramatica" : "express\u00E3o")
+			throw new WarningException("Parece haver algum erro com sua " + (type == 0 ? "automato" : "express\u00E3o")
 					+ ". Por favor reanalize-a e tente novamente.");
 		}
 
@@ -211,7 +204,7 @@ public class Main {
 
 		dao.adicionarRegular(regular);
 
-		setRightContent(side, "GR/ER", regular, true);
+		setRightContent(side, "AF/ER", regular, true);
 		createExtras(side);
 	}
 
@@ -236,7 +229,7 @@ public class Main {
 		Regular regular = null;
 
 		if (type == 0) {
-			regular = ControleGR.definirGramatica(titulo, reg);
+			regular = ControleAF.definirAutomato(titulo, reg);
 		} else if (type == 1) {
 			regular = ControleER.criarExpressaoRegular(titulo, reg);
 		}
@@ -251,7 +244,7 @@ public class Main {
 
 		dao.editarRegular(regular);
 
-		updateRightContentPanel(side, "GR/ER", regular, true);
+		updateRightContentPanel(side, "AF/ER", regular, true);
 	}
 
 	/**
@@ -263,10 +256,10 @@ public class Main {
 	 *             Caso haja um erro vindo do banco de dados.
 	 */
 	public void deleteGrEr(int side) throws Exception {
-		Regular reg = getRegular(side, "GR/ER");
+		Regular reg = getRegular(side, "AF/ER");
 		if (reg != null) {
 			regulares.remove(reg.titulo());
-			setRightContent(side, "GR/ER", null, true);
+			setRightContent(side, "AF/ER", null, true);
 			ui.removeOfTheList(side, reg.titulo());
 			dao.removeRegular(reg);
 		}
@@ -279,7 +272,7 @@ public class Main {
 	 *            Qual lado? 1 ou 2.
 	 */
 	private void createExtras(int side) {
-		Regular reg = getRegular(side, "GR/ER");
+		Regular reg = getRegular(side, "AF/ER");
 		String extras = reg.extras();
 
 		if (!reg.isDumbGrEr() && (extras.equals("") || extras.contains("AF")))
@@ -305,22 +298,20 @@ public class Main {
 	 * @param side
 	 *            Qual lado? 1 ou 2.
 	 * @param key
-	 *            Qual 'key'? GR/ER, AF, AFD, AFD_Min, AFD_Comp.
+	 *            Qual 'key'? AF/ER, AF, AFD, AFD_Min, AFD_Comp.
 	 */
 	public void showRightContent(int side, String key) {
 		if (regulares.containsKey(key)) {// left list [key == titulo]
 			Regular reg = regulares.get(key);
 			if (regulares.get(key).ehAutomato()) {
-				Gramatica dumb = new Gramatica(reg.titulo(), "");
-				dumb.extras(reg.extras());
 
 				Regular automato = ControleAF.definirAutomato(reg.titulo(), ((Automato) reg).transicoesString());
 				setRightContent(side, "AF", automato, false);
 
-				setRightContent(side, "GR/ER", automato, true);
-				setRightContent(side, "AF", automato, false);
+				//setRightContent(side, "AF/ER", automato, true);
+				//setRightContent(side, "AF", automato, false);
 			} else
-				setRightContent(side, "GR/ER", reg, true);
+				setRightContent(side, "AF/ER", reg, true);
 
 			createExtras(side);
 		} else if (panels.get(side - 1).containsKey(key)) {// change on comboBox
@@ -335,7 +326,7 @@ public class Main {
 	 * @param side
 	 *            Qual lado? 1 ou 2.
 	 * @param key
-	 *            Qual 'key'? GR/ER, AF, AFD, AFD_Min, AFD_Comp.
+	 *            Qual 'key'? AF/ER, AF, AFD, AFD_Min, AFD_Comp.
 	 * @param reg
 	 *            'Conjunto' Regular que ira ser adicionado ao painel.
 	 * @param clean
@@ -349,7 +340,7 @@ public class Main {
 		if (reg != null)
 			panel.setRegular(reg);
 
-		if (!ui.setComboBoxSelectedItem(side, key))// caso ja esteja no panel do
+		if (!ui.setComboBoxSelectedItem(side, key)) // caso ja esteja no panel do
 													// 'key', entao da refresh
 													// no panel
 			ui.setRightContent(side, panel);
@@ -362,14 +353,14 @@ public class Main {
 	 * @param side
 	 *            Qual lado? 1 ou 2.
 	 * @param key
-	 *            Qual 'key'? GR/ER, AF, AFD, AFD_Min, AFD_Comp.
+	 *            Qual 'key'? AF/ER, AF, AFD, AFD_Min, AFD_Comp.
 	 * @param regular
 	 *            'Conjunto' Regular que ira ser adicionado ao painel.
 	 * @param clean
 	 *            Devesse limpar os outros paineis?
 	 */
 	private void updateRightContentPanel(int side, String key, Regular regular, boolean clean) {
-		if (isSameGrErInBothPanels()) {// ms GR/ER nos 2 lados
+		if (isSameGrErInBothPanels()) {// ms AF/ER nos 2 lados
 			setRightContent((side % 2) + 1, key, regular, clean);
 			createExtras((side % 2) + 1);
 		}
@@ -403,9 +394,9 @@ public class Main {
 	 *             Caso haja um erro vindo do banco de dados.
 	 */
 	private void determinize(int side, boolean updateExtras) throws Exception {
-		if (getRegular(side, "GR/ER") == null)// ainda n tem GR/ER
+		if (getRegular(side, "AF/ER") == null)// ainda n tem AF/ER
 			return;
-		else if (getRegular(side, "AFD") != null) {// AFD ja esta criado, entao
+		else if (getRegular(side, "AFD") != null) { // AFD ja esta criado, entao
 													// soh mude para o panel
 													// dele
 			setRightContent(side, "AFD", null, false);
@@ -417,7 +408,7 @@ public class Main {
 
 		if (updateExtras) {
 			addExtra(side, "AFD");
-			dao.definirExtras(getRegular(side, "GR/ER"));
+			dao.definirExtras(getRegular(side, "AF/ER"));
 		}
 
 		if (isSameGrErInBothPanels())
@@ -435,7 +426,7 @@ public class Main {
 	 *             Caso haja um erro vindo do banco de dados.
 	 */
 	public void complement(int side) throws Exception {
-		complement(side, true);
+		complemento(side, true);
 	}
 
 	/**
@@ -449,8 +440,8 @@ public class Main {
 	 * @throws Exception
 	 *             Caso haja um erro vindo do banco de dados.
 	 */
-	private void complement(int side, boolean updateExtras) throws Exception {
-		if (getRegular(side, "GR/ER") == null)// ainda n tem GR/ER
+	private void complemento(int side, boolean updateExtras) throws Exception {
+		if (getRegular(side, "AF/ER") == null)// ainda n tem AF/ER
 			return;
 		else if (getRegular(side, "AFD_Comp") != null) {// AFD_Comp ja esta
 														// criado, entao soh
@@ -468,11 +459,11 @@ public class Main {
 
 		if (updateExtras) {
 			addExtra(side, "AFD|AFD_Comp");
-			dao.definirExtras(getRegular(side, "GR/ER"));
+			dao.definirExtras(getRegular(side, "AF/ER"));
 		}
 
 		if (isSameGrErInBothPanels())
-			complement((side % 2) + 1, false);
+			complemento((side % 2) + 1, false);
 	}
 
 	/**
@@ -501,7 +492,7 @@ public class Main {
 	 *             Caso haja um erro vindo do banco de dados.
 	 */
 	private void minimize(int side, boolean updateExtras) throws Exception {
-		if (getRegular(side, "GR/ER") == null)// ainda n tem GR/ER
+		if (getRegular(side, "AF/ER") == null)// ainda n tem AF/ER
 			return;
 		else if (getRegular(side, "AFD_Min") != null) {// AFD_Min ja esta
 														// criado, entao soh
@@ -519,7 +510,7 @@ public class Main {
 
 		if (updateExtras) {
 			addExtra(side, "AFD|AFD_Min");
-			dao.definirExtras(getRegular(side, "GR/ER"));
+			dao.definirExtras(getRegular(side, "AF/ER"));
 		}
 
 		if (isSameGrErInBothPanels())
@@ -579,8 +570,8 @@ public class Main {
 	 * @return
 	 */
 	private boolean isSameGrErInBothPanels() {
-		Regular r1 = getRegular(1, "GR/ER");
-		Regular r2 = getRegular(2, "GR/ER");
+		Regular r1 = getRegular(1, "AF/ER");
+		Regular r2 = getRegular(2, "AF/ER");
 
 		if (r1 != null && r2 != null && r2.titulo().equals(r1.titulo())) {
 			return true;
@@ -597,7 +588,7 @@ public class Main {
 	 * @return TRUE caso a Gr/Er esta vazia.
 	 */
 	public boolean isDumbGrEr(int side) {
-		Regular reg = getRegular(side, "GR/ER");
+		Regular reg = getRegular(side, "AF/ER");
 		return reg == null ? false : reg.isDumbGrEr();
 	}
 
@@ -618,7 +609,7 @@ public class Main {
 	 * @return TRUE caso seja uma ER.
 	 */
 	public boolean isRegExpression(int side) {
-		return getRegular(side, "GR/ER").ehExpressaoRegular();
+		return getRegular(side, "AF/ER").ehExpressaoRegular();
 	}
 
 	/**
@@ -630,7 +621,7 @@ public class Main {
 	 *            Valor 'extra' a ser adicionado.
 	 */
 	private void addExtra(int side, String extra) {
-		Regular reg = getRegular(side, "GR/ER");
+		Regular reg = getRegular(side, "AF/ER");
 
 		reg.extra(extra);
 	}

@@ -33,9 +33,9 @@ public final class SubArvore {
 	 * @return			Posição na raiz na String da ER.
 	 */
 	public int posicaoDaRaiz(String expressao_regular){
-		ArrayList<Operator> operadores = new ArrayList<>();
+		ArrayList<Operador> operadores = new ArrayList<>();
 		
-		getListOfOperators(expressao_regular, operadores);
+		obterListaDeOperadores(expressao_regular, operadores);
 		
 		if(operadores.size() == 0)
 			return -1;
@@ -50,13 +50,13 @@ public final class SubArvore {
 	 * @param expressao_regular			ER base.
 	 * @param operadores		Lista de base para receber os operadores. 
 	 */
-	private void getListOfOperators(String expressao_regular, ArrayList<Operator> operadores) {
+	private void obterListaDeOperadores(String expressao_regular, ArrayList<Operador> operadores) {
 		Stack<Character> pilhaParenteses = new Stack<>();
 		char tmp;
 		for(int i = 0; i<expressao_regular.length(); i++){
 			tmp = expressao_regular.charAt(i);
 			if(pilhaParenteses.isEmpty() && ControleER.ehOperador(tmp,false))
-				operadores.add(new Operator(tmp, i));
+				operadores.add(new Operador(tmp, i));
 			else if(tmp == '(')
 				pilhaParenteses.push('(');
 			else if(tmp == ')')
@@ -71,27 +71,27 @@ public final class SubArvore {
 	 * @param operadores		Lista de operadores base.
 	 * @return				Posição do operador com menor precedencia.
 	 */
-	private int obterPosicaoMenorPrecedencia(ArrayList<Operator> operadores) {
+	private int obterPosicaoMenorPrecedencia(ArrayList<Operador> operadores) {
 		int lower = 0;
 		for (int i = 0; i < operadores.size(); i++) {
-			if(lowerPrecedence(operadores.get(lower).simbol, operadores.get(i).simbol))
+			if(menorPrecedencia(operadores.get(lower).simbol, operadores.get(i).simbol))
 				lower = i;
 		}
 		return operadores.get(lower).position;
 	}
 	
-	private boolean lowerPrecedence(char c1, char c2){
+	private boolean menorPrecedencia(char c1, char c2){
 		return precedencia.get(c1) < precedencia.get(c2);
 	}
 	
 	/**
 	 * Classe interna usada em algumas operações.
 	 */
-	private class Operator{
+	private class Operador{
 		public char simbol;
 		public int position;
 		
-		public Operator(char simbol, int position){
+		public Operador(char simbol, int position){
 			this.simbol = simbol;
 			this.position = position;
 		}

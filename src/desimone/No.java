@@ -1,15 +1,15 @@
 package desimone;
 
 public class No {
-	private No pai, filhoEsq, filhoDir, costura;
+	private No pai, esquerda, direita, costura;
 	// 'label' do nodo
-	private char c;
+	private char simbolo;
 	// numero usado nas folhas
-	private int numero;
+	private int numeroFolhas;
 	// codigo utilizado para diferenciar os nodos 
 	private int innerCode;
 	// ja existe uma costura que leva a este nodo?
-	private boolean isCosturado;
+	private boolean ehCosturado;
 	private static int code;
 	
 	public No(){	
@@ -18,7 +18,7 @@ public class No {
 	}
 	
 	public No(char c, No pai){
-		this.c = c;
+		this.simbolo = c;
 		this.pai = pai;
 		
 		innerCode = code;
@@ -27,9 +27,9 @@ public class No {
 	
 	public No(No pai, No filhoEsq, No filhoDir, char c){
 		this.pai = pai;
-		this.filhoEsq = filhoEsq;
-		this.filhoDir = filhoDir;
-		this.c = c;
+		this.esquerda = filhoEsq;
+		this.direita = filhoDir;
+		this.simbolo = c;
 		
 		innerCode = code;
 		code += 1;
@@ -46,20 +46,20 @@ public class No {
 	
 	// Filho Esquerda
 	public No getFilhoEsq() {
-		return filhoEsq;
+		return esquerda;
 	}
 
 	public void setFilhoEsq(No filhoEsq) {
-		this.filhoEsq = filhoEsq;
+		this.esquerda = filhoEsq;
 	}
 	
 	// Filho Direita
 	public No getFilhoDir() {
-		return filhoDir;
+		return direita;
 	}
 
 	public void setFilhoDir(No filhoDir) {
-		this.filhoDir = filhoDir;
+		this.direita = filhoDir;
 	}
 	
 	// Costura
@@ -73,42 +73,42 @@ public class No {
 	
 	// Conteudo
 	public char getC() {
-		return c;
+		return simbolo;
 	}
 
 	public void setC(char c) {
-		this.c = c;
+		this.simbolo = c;
 	}
 	
 	// Numero
 	public int getNumero() {
-		return numero;
+		return numeroFolhas;
 	}
 
 	public void setNumero(int numero) {
-		this.numero = numero;
+		this.numeroFolhas = numero;
 	}
 	
 	// isCosturado
 	public boolean isCosturado(){
-		return this.isCosturado;
+		return this.ehCosturado;
 	}
 	
 	public void setIsCosturado(boolean c){
-		this.isCosturado = c;
+		this.ehCosturado = c;
 	}
 
 	@Override
 	public String toString() {
-		return "["+(numero>0?numero:"")+c+"]";
+		return "["+(numeroFolhas>0?numeroFolhas:"")+simbolo+"]";
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + c;
-		result = prime * result + numero;
+		result = prime * result + simbolo;
+		result = prime * result + numeroFolhas;
 		result = prime * result + innerCode;
 		return result;
 	}
@@ -120,9 +120,9 @@ public class No {
 		if (obj == null || getClass() != obj.getClass())
 			return false;
 		No other = (No) obj;
-		if (c != other.c)
+		if (simbolo != other.simbolo)
 			return false;
-		if (numero != other.numero)
+		if (numeroFolhas != other.numeroFolhas)
 			return false;
 		if(innerCode != other.innerCode)
 			return false;

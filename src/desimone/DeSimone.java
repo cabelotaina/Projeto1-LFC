@@ -24,15 +24,15 @@ public abstract class DeSimone {
 		HashMap<ComposicaoEstados, ArrayList<No>> comp = new HashMap<>();//composicao de estados
 		Automato af = new Automato();
 		
-		for(No n : tree.getListLeaves())
+		for(No n : tree.obterListaDeFolhas())
 			af.adicionarSimbolo(n.getC());
 		
 		Estado sTmp = new Estado("Q0");
 			af.adicionarEstadoInicial(sTmp);
 		ComposicaoEstados cState = new ComposicaoEstados(sTmp);
-			cState.addNode(tree.getRoot());
+			cState.adicionarNo(tree.obterRaiz());
 		
-		createAutomatonRec(cState, af, tree, comp);	
+		criarAutomatoRecursivamente(cState, af, tree, comp);	
 		
 		return af;
 	}
@@ -46,12 +46,12 @@ public abstract class DeSimone {
 	 * @param comp		HashMap que contem o estado base como key e 
 	 * 					a lista de nodos da sua composição como value.
 	 */
-	private static void createAutomatonRec(ComposicaoEstados sTmp, Automato af, Arvore tree,
+	private static void criarAutomatoRecursivamente(ComposicaoEstados sTmp, Automato af, Arvore tree,
 			HashMap<ComposicaoEstados, ArrayList<No>> comp) {
 		
 		ArrayList<No> tmp;
 		boolean equal = false;
-		ArrayList<No> compTmp = getComposition(sTmp, tree);
+		ArrayList<No> compTmp = obterComposicao(sTmp, tree);
 		if(compTmp.size() == 0)
 			return;
 		
@@ -63,14 +63,14 @@ public abstract class DeSimone {
 					equal = false;
 			}
 			if(equal && compTmp.size() == tmp.size()){
-				af.transicaoParaProximoEstado(sTmp.getState(), s.getState());
+				af.transicaoParaProximoEstado(sTmp.obterEstado(), s.obterEstado());
 				break;
 			}else if(equal && compTmp.size() != tmp.size()){
 				equal = false;
 			}
 		}
 		if(!equal){
-			af.adicionarEstado(sTmp.getState());
+			af.adicionarEstado(sTmp.obterEstado());
 			comp.put(sTmp, compTmp);
 			
 			HashMap<Character, ArrayList<Estado>> newStates = new HashMap<>();
@@ -81,7 +81,7 @@ public abstract class DeSimone {
 				if(n.getC() != '$')
 					newStates.get(n.getC()).add(new Estado("Q"+n.getNumero()));
 				else
-					af.adicionarEstadoFinal(sTmp.getState());
+					af.adicionarEstadoFinal(sTmp.obterEstado());
 			}
 			
 			ComposicaoEstados nState;
@@ -91,14 +91,14 @@ public abstract class DeSimone {
 					nState = new ComposicaoEstados(new Estado(newStates.get(c).toString()));
 					for(No n : compTmp)
 						if(n.getC() == c)
-							nState.addNode(n);
+							nState.adicionarNo(n);
 					
-					af.adicionarTransicao(sTmp.getState(), c, nState.getState());
+					af.adicionarTransicao(sTmp.obterEstado(), c, nState.obterEstado());
 					tmp2.add(nState);
 				}
 			}
 			for(ComposicaoEstados s : tmp2)
-				createAutomatonRec(s, af, tree, comp);
+				criarAutomatoRecursivamente(s, af, tree, comp);
 		}
 	}
 	
@@ -110,14 +110,14 @@ public abstract class DeSimone {
 	 * @param tree		Arvore base.
 	 * @return			Lista de nodos que são a composição do estado dado.
 	 */
-	private static ArrayList<No> getComposition(ComposicaoEstados sTmp, Arvore tree) {
+	private static ArrayList<No> obterComposicao(ComposicaoEstados sTmp, Arvore tree) {
 		
 		ArrayList<No> result = new ArrayList<>();
 		ArrayList<NoAtravessado> traversed;
-		for(No n : sTmp.getComposition()){
+		for(No n : sTmp.obterComposicao()){
 			traversed  = new ArrayList<>();
 			if(n.getC() != '$')
-				searchTree(n, !ControleER.ehOperador(n.getC(),false), result, traversed, tree);
+				buscarNaArvore(n, !ControleER.ehOperador(n.getC(),false), result, traversed, tree);
 		}
 		
 		return result;
@@ -136,7 +136,7 @@ public abstract class DeSimone {
 	 * @param traversed 
 	 * @param tree		Arvore base.
 	 */
-	private static void searchTree(No n, boolean dir, ArrayList<No> result, 
+	private static void buscarNaArvore(No n, boolean dir, ArrayList<No> result, 
 			ArrayList<NoAtravessado> traversed, Arvore tree) {
 		
 		if(n == null || result.contains(n))
@@ -152,19 +152,19 @@ public abstract class DeSimone {
 		if(!dir){//descida
 			switch (n.getC()) {
 				case '.':
-					searchTree(n.getFilhoEsq(), false, result, traversed, tree);
+					buscarNaArvore(n.getFilhoEsq(), false, result, traversed, tree);
 					break;
 				case '|':
-					searchTree(n.getFilhoEsq(), false, result, traversed, tree); 
-					searchTree(n.getFilhoDir(), false, result, traversed, tree);
+					buscarNaArvore(n.getFilhoEsq(), false, result, traversed, tree); 
+					buscarNaArvore(n.getFilhoDir(), false, result, traversed, tree);
 					break;
 				case '*':
-					searchTree(n.getFilhoEsq(), false, result, traversed, tree);
-					searchTree(n.getCostura(), true, result, traversed, tree); 
+					buscarNaArvore(n.getFilhoEsq(), false, result, traversed, tree);
+					buscarNaArvore(n.getCostura(), true, result, traversed, tree); 
 					break;
 				case '?':
-					searchTree(n.getFilhoEsq(), false, result, traversed, tree);
-					searchTree(n.getCostura(), true, result, traversed, tree); 
+					buscarNaArvore(n.getFilhoEsq(), false, result, traversed, tree);
+					buscarNaArvore(n.getCostura(), true, result, traversed, tree); 
 					break;
 				default: //folha
 					if(!result.contains(n))
@@ -174,26 +174,26 @@ public abstract class DeSimone {
 		}else{//subida
 			switch (n.getC()) {
 			case '.':
-				searchTree(n.getFilhoDir(), false, result, traversed, tree);
+				buscarNaArvore(n.getFilhoDir(), false, result, traversed, tree);
 				break;
 			case '|':
 				while(n.getFilhoDir() != null){
 					n = n.getFilhoDir();
 				}
-				searchTree(n.getCostura(), true, result, traversed, tree);
+				buscarNaArvore(n.getCostura(), true, result, traversed, tree);
 				break;
 			case '*':
-				searchTree(n.getFilhoEsq(), false, result, traversed, tree);
-				searchTree(n.getCostura(), true, result, traversed, tree);
+				buscarNaArvore(n.getFilhoEsq(), false, result, traversed, tree);
+				buscarNaArvore(n.getCostura(), true, result, traversed, tree);
 				break;
 			case '?':
-				searchTree(n.getCostura(), true, result, traversed, tree); 
+				buscarNaArvore(n.getCostura(), true, result, traversed, tree); 
 				break;
 			default://folha
 				if(n.getC() == '$')
 					result.add(n);
 				else 
-					searchTree(n.getCostura(), true, result, traversed, tree);
+					buscarNaArvore(n.getCostura(), true, result, traversed, tree);
 				break;
 			}
 		}

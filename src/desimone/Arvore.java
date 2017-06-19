@@ -10,7 +10,7 @@ public class Arvore {
 	private ArrayList<No> listaFolhas;
 	
 	public Arvore(String expressao_regular) {
-		raiz = createSubTrees(null, expressao_regular);
+		raiz = criarSubArvore(null, expressao_regular);
 		listaFolhas = new ArrayList<>();
 		adicionarFolhasEmOrdem();
 		costuraEmOrdemRec(raiz);
@@ -19,23 +19,23 @@ public class Arvore {
 		//imprimirPreOrdemRec(raiz);
 	}
 	
-	public No getRoot(){
+	public No obterRaiz(){
 		return this.raiz;
 	}
 	
-	public ArrayList<No> getListLeaves(){
+	public ArrayList<No> obterListaDeFolhas(){
 		return this.listaFolhas;
 	}
 
-	private No createSubTrees(No n, String expressao_regular) {
+	private No criarSubArvore(No n, String expressao_regular) {
 		No newNodo = new No();
 		SubArvore sub = SubArvore.obterInstancia();
 		
-		expressao_regular = removeExternalParentheses(expressao_regular);
+		expressao_regular = removerParenteseExterno(expressao_regular);
 		int raiz = sub.posicaoDaRaiz(expressao_regular);
 		
 		if(raiz == -1 && expressao_regular.length() > 1)
-			return createSubTrees(n, expressao_regular);
+			return criarSubArvore(n, expressao_regular);
 		else if(raiz == -1 && expressao_regular.length() == 1)
 			return new No(expressao_regular.charAt(0), n);
 		
@@ -46,19 +46,19 @@ public class Arvore {
 		String erDir = expressao_regular.substring(raiz+1, expressao_regular.length());
 		
 		if(erEsq.length() > 1)
-			newNodo.setFilhoEsq(createSubTrees(newNodo, erEsq));
+			newNodo.setFilhoEsq(criarSubArvore(newNodo, erEsq));
 		else if(erEsq.length() == 1)
 			newNodo.setFilhoEsq(new No(erEsq.charAt(0), newNodo));
 		
 		if(erDir.length() > 1)
-			newNodo.setFilhoDir(createSubTrees(newNodo, erDir));
+			newNodo.setFilhoDir(criarSubArvore(newNodo, erDir));
 		else if(erDir.length() == 1)
 			newNodo.setFilhoDir(new No(erDir.charAt(0), newNodo));
 		
 		return newNodo;
 	}
 	
-	private String removeExternalParentheses(String expressao_regular){
+	private String removerParenteseExterno(String expressao_regular){
 		String tmp = expressao_regular;
 		Stack<Character> stackParentheses = new Stack<>();
 		char cTmp;

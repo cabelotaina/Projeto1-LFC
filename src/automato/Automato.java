@@ -106,7 +106,7 @@ public class Automato extends Regular {
 	 *            nome do estado a ser encontrado.
 	 * @return estado com o mesmo nome dado como entrada.
 	 */
-	public Estado getState(String nome) {
+	public Estado obterEstado(String nome) {
 		for (Estado estado : estados) {
 			if (estado.nome().equals(nome))
 				return estado;

@@ -1,20 +1,20 @@
 package desimone;
 
 public class NoAtravessado {
-	private No n;
-	private boolean dir;
+	private No no;
+	private boolean direcao;
 	
 	public NoAtravessado(No n, boolean dir){
-		this.n = n;
-		this.dir = dir;
+		this.no = n;
+		this.direcao = dir;
 	}
 
-	public No getNode() {
-		return n;
+	public No obterNo() {
+		return no;
 	}
 
-	public boolean getDir() {
-		return dir;
+	public boolean obterDirecao() {
+		return direcao;
 	}
 
 	@Override
@@ -24,11 +24,11 @@ public class NoAtravessado {
 		if (obj == null || getClass() != obj.getClass())
 			return false;
 		NoAtravessado other = (NoAtravessado)obj;
-		return this.n.equals(other.n) && this.dir == other.dir;
+		return this.no.equals(other.no) && this.direcao == other.direcao;
 	}
 	
 	@Override
 	public String toString() {
-		return n+"-"+(dir?"TRUE":"FALSE");
+		return no+"-"+(direcao?"TRUE":"FALSE");
 	}
 }
