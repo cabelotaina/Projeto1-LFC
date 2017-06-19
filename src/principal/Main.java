@@ -6,6 +6,7 @@ import java.util.HashMap;
 import automato.Automato;
 import automato.ControleAF;
 import banco_de_dados.RegularDao;
+import desimone.DeSimone;
 import expressao_regular.ControleER;
 import gui.RightContent;
 import gui.ShowAF;
@@ -35,7 +36,7 @@ public class Main {
 		// automato.transicoesString());
 		// System.out.println(automato.titulo());
 		new Main();
-		// new Main("DEBUG");
+		//new Main("DEBUG");
 	}
 
 	public Main(String string) {
@@ -67,7 +68,7 @@ public class Main {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		if (regs != null && regs.size() > 0) {
 			for (Regular r : regs) {
 				System.out.println(r.titulo());
@@ -176,16 +177,16 @@ public class Main {
 		if (type == 0) {
 			regular = (Regular) reg;
 			regular.titulo(titulo);
-			regular.extra("");
 		} else if (type == 1) {
 			regular = ControleER.criarExpressaoRegular(titulo, (String) reg);
-			regular.extra("");
 		}
 
 		if (regular == null) {
 			throw new WarningException("Parece haver algum erro com sua " + (type == 0 ? "automato" : "express\u00E3o")
 					+ ". Por favor reanalize-a e tente novamente.");
 		}
+
+		regular.extra("");
 
 		regulares.put(titulo, regular);
 		ui.addInTheList(titulo);
@@ -276,11 +277,13 @@ public class Main {
 	private void createExtras(int side, String type) {
 		Regular reg = getRegular(side, type);
 		String extras = reg.extras();
+		String titule = reg.titulo();
 
-		if (!reg.isDumbGrEr() && (extras.equals("") || extras.contains("AF")))
+		if (extras.equals("") || extras.contains("AF") || titule.contains("AF"))
 			panels.get(side - 1).get("AF").setRegular(ControleAF.criarAutomato(reg));
 
 		Automato af = (Automato) getRegular(side, "AF");
+
 		if (extras.contains("AFD"))
 			panels.get(side - 1).get("AFD").setRegular(ControleAF.determinizacao(af));
 
@@ -396,9 +399,10 @@ public class Main {
 	 *             Caso haja um erro vindo do banco de dados.
 	 */
 	private void determinize(int side, boolean updateExtras) throws Exception {
-		if (getRegular(side, "ER") == null)// ainda n tem AF/ER
-			return;
-		else if (getRegular(side, "AFD") != null) { // AFD ja esta criado, entao
+		
+		
+		
+		if (getRegular(side, "AFD") != null) { // AFD ja esta criado, entao
 													// soh mude para o panel
 													// dele
 			setRightContent(side, "AFD", null, false);
@@ -406,11 +410,12 @@ public class Main {
 		}
 
 		Automato afnd = (Automato) getRegular(side, "AF");
+		System.out.println(afnd.alfabeto());
 		setRightContent(side, "AFD", ControleAF.determinizacao(afnd), false);
 
 		if (updateExtras) {
 			addExtra(side, "AFD");
-			dao.definirExtras(getRegular(side, "AF/ER"));
+			dao.definirExtras(getRegular(side, "AF"));
 		}
 
 		if (ehOMesmoAutomatoEmAmbosOsPaineis())
@@ -427,7 +432,7 @@ public class Main {
 	 * @throws Exception
 	 *             Caso haja um erro vindo do banco de dados.
 	 */
-	public void complement(int side) throws Exception {
+	public void complemento(int side) throws Exception {
 		complemento(side, true);
 	}
 
@@ -438,12 +443,12 @@ public class Main {
 	 * @param side
 	 *            Qual lado? 1 ou 2.
 	 * @param updateExtras
-	 *            Devesse atualizar o valor de 'Extras' da Gr/Er?
+	 *            Devesse atualizar o valor de 'Extras' da Af/Er?
 	 * @throws Exception
 	 *             Caso haja um erro vindo do banco de dados.
 	 */
 	private void complemento(int side, boolean updateExtras) throws Exception {
-		if (getRegular(side, "AF/ER") == null)// ainda n tem AF/ER
+		if (getRegular(side, "AF") == null)// ainda n tem AF/ER
 			return;
 		else if (getRegular(side, "AFD_Comp") != null) {// AFD_Comp ja esta
 														// criado, entao soh
@@ -461,7 +466,7 @@ public class Main {
 
 		if (updateExtras) {
 			addExtra(side, "AFD|AFD_Comp");
-			dao.definirExtras(getRegular(side, "AF/ER"));
+			dao.definirExtras(getRegular(side, "AF"));
 		}
 
 		if (ehOMesmoAutomatoEmAmbosOsPaineis())
@@ -546,7 +551,7 @@ public class Main {
 	 * @throws Exception
 	 *             Caso haja um erro vindo do banco de dados.
 	 */
-	public void intersection() throws Exception {
+	public void intersecao() throws Exception {
 		if (getRegular(1, "AFD_Min") == null)// melhor usar os AFDs minimos para
 												// comparar...
 			minimize(1, true);
@@ -611,7 +616,7 @@ public class Main {
 	 * @return TRUE caso seja uma ER.
 	 */
 	public boolean isRegExpression(int side) {
-		return getRegular(side, "AF/ER").ehExpressaoRegular();
+		return getRegular(side, "ER").ehExpressaoRegular();
 	}
 
 	/**

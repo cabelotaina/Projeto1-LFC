@@ -113,6 +113,7 @@ public class ControleAF {
 	public static Automato complemento(Automato estado) {
 
 		Automato comp;
+		
 		if (!estado.extras().contains("AFD"))
 			comp = determinizacao(estado);
 		else
@@ -497,6 +498,8 @@ public class ControleAF {
 	public static Regular definirAutomato(String titulo, String reg) {
 
 		Automato automato = new Automato();
+		
+		System.out.println(reg);
 
 		String[] split = reg.replace("*", "").replace("->", "").replace("{", "").replace("}", "").split(";");
 		for (String s : split) {
@@ -549,6 +552,9 @@ public class ControleAF {
 			automato.adicionarTransicao(corrente, simbolo, destino);
 
 		}
+		
+		System.out.println(automato.estados());
+		
 		automato.titulo(titulo);
 
 		return automato;

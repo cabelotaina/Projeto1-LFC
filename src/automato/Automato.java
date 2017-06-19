@@ -258,6 +258,8 @@ public class Automato extends Regular {
 				separadasAux.add("->" + sep);
 			} else if (estadosFinais.contains(new Estado(atual))) {
 				separadasAux.add("*" + sep);
+			} else{
+				separadasAux.add(sep);
 			}
 		}
 		String superString = "{";

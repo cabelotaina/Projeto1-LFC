@@ -376,10 +376,10 @@ public class UserInterface {
 					main.minimize(side);
 					break;
 				case "Complemento":
-					main.complement(side);
+					main.complemento(side);
 					break;
 				case "Intersec\u00E7\u00E3o":
-					main.intersection();
+					main.intersecao();
 					break;
 				case "Compara\u00E7\u00E3o":
 					boolean eq = main.compare();
